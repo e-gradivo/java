@@ -122,6 +122,84 @@ System.out.println(helloStr); // nespremenjen niz po prejšnji operaciji
 System.out.println(helloStr.substring(0, 5)); // niz po izrezu
 ```
 
+### Primerjanje
+
+Dodatno pozornost moramo nameniti primerjanju nizov, saj operator "je enako" `==` ne deluje na isti način, kot pri primitivnih podatkovnih tipih. Namesto tega uporabljamo metodo `equals`, ki opravi dejansko primerjavo znakov v nizu.
+
+```java
+String str = "hello"; // inicializiramo spremenljivko
+str.equals("hello"); // preverimo ujemanje in ugotovimo, da se niza ujemata
+```
+
+Razlog, da ne uporabljamo operatorja enakosti na dveh nizih je v podrobnosti, saj nad tipom, ki ga predstavlja niz opravimo primerjavo referenc. To pomeni, da primerjamo ali sta niza shranjena na isti pomnilniški lokaciji in ne primerjavo po znakih.
+
+```java
+String str = "hello"; // zapišemo kot niz
+if (str == "hello") { // primerjamo niza z operatorjem enakosti
+    // najverjetneje bo pogoj izpolnjen, saj sta spremenljivka str in niz hello oba v istem zapisu
+}
+
+String newStr = new String("hello"); // zapišemo kot objekt
+if (str == newStr) {
+    // pogoj ne bo izpolnjen, saj se zapisa med spremenljivko str in newStr razlikujeta
+}
+```
+
+Pri zapisu dejanskega niza _(ang. literal)_ se ustvari konstantna vrednost, ki dobi točno določeno pomnilniško lokacijo. Ta se uporabi tudi v primeru ponovne uporabe iste konstantne vrednosti. Pri zapisu niza v obliki novega objekta, pa ta vedno dobi nov pomnilniški naslov, saj se razlikuje od ostalih.
+
+### Prazni nizi
+
+Prazen niz zapišemo kot `""` in ima dolžino 0.
+
+```java
+String str = "";
+str.length(); // vrne 0
+str.equals(""); // vrne true
+```
+
+Poleg tega zapisa poznamo posebno vrednost `null`, ki pa ne določa vrednosti niza, temveč označuje, da spremenljivka nima nastavljenega niza. Kadar ima spremenljivka nastavljeno to posebno vrednost, prav tako ne moremo klicati metod na nizu. V kolikor to poskusimo se v programu pojavi izjema _(ang. exception)_, zato prej vedno preverimo kakšna je vrednost spremenljivke.
+
+```java
+String str = null;
+if (str == null) { // str lahko primerjamo z null
+    System.out.println("vrednost spremenljivke str je null");
+} else {
+    // ta blok dosežemo samo kadar ima spremenljivka str nastavljen niz
+    System.out.println(str.length());
+}
+```
+
+### Dostop do posameznih znakov ali podniza
+
+Java se pri dostopu do posameznih znakov niza nekoliko razlikuje od ostalih programskih jezikov, saj ne omogoča neposrednega dostopa preko indeksov z zapisom, kot ga poznamo pri tabelah. Namesto tega lahko nad nizom uporabimo metodo `charAt`, ki ji podamo indeks znaka (začnemo z 0 za prvi znak), ki ga želimo. V kolikor indeks, ki ga podamo nad izbranim nizom ne obstaja (niz ni dovolj dolg), se v programu pojavi izjema.
+
+```java
+String str = "hello";
+str.charAt(4); // dobimo zadnji znak o
+str.charAt(10); // pojavi se izjema, saj ima niz zgolj 5 znakov
+```
+
+Če bi navkljub temu želeli dostopati do znakov preko indeksov z zapisom pri tabelah, pa moramo najprej spremeniti niz v tabelo znakov, kar lahko storimo z metodo `toCharArray`.
+
+```java
+String str = "hello";
+char[] chars = str.toCharArray();
+chars[4]; // dobimo zadnji znak o
+```
+
+Podnize iz prvotnega niza lahko sestavimo s pomočjo metode `substring`. Omogoča dva načina ustvarjanja podnizov:
+
+- z začetnim indeksom: `substring(int zacetniIndeks)` - dobimo niz od podanega indeksa do konca obstoječega niza
+- z začetnim in končnim indeksom: `substring(int zacetniIndeks, int koncniIndeks)` - dobimo niz od podanega začetnega, do končnega indeksa
+
+```java
+String str = "hello";
+str.substring(3); // dobimo zadnja dva znaka lo
+str.substring(2, 4); // dobimo predzadnja dva znaka ll
+```
+
+### Operacije nad nizi
+
 Razred String vključuje številne metode za delo z nizi, podpira pa tudi operacijo s pomočjo operatorja za združevanje (konkatenacijo) `+`, ki omogoča lepljenje dveh nizov.
 
 ```java
@@ -156,6 +234,8 @@ Seznam nekaj najpogosteje uporabljenih metod:
 
 Za uporabo posameznih metod in zahtevanih argumentov preverimo [uradno dokumentacijo](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html).
 
+### StringBuffer
+
 Obstaja tudi dodaten razred StringBuffer, ki je za razliko od razreda String spremenljiv (ang. _mutable_) in omogoča vrivanje in dodajanje znakov na konec niza. Ima določeno kapaciteto (število znakov), ki jo v primeru prekoračitve pri izbrani operaciji samodejno poveča (realocira).
 
 ```java
@@ -186,4 +266,7 @@ sb.insert(5, ", ");
 System.out.println(sb);
 System.out.println(sb.append('!'));
 System.out.println(sb);
+
+String sbStr = sb.toString();
+System.out.println(sbStr);
 ```
