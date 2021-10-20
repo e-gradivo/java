@@ -217,6 +217,7 @@ Seznam nekaj najpogosteje uporabljenih metod:
 - contains
 - endsWith
 - equals
+- equalsIgnoreCase
 - format
 - indexOf
 - isBlank
