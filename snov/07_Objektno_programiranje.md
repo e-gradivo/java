@@ -110,6 +110,55 @@ class Narocilo {
 }
 ```
 
+Konstruktor se kliče samo ob konstruiranju novega objekta s pomočjo ključne besede `new` in je namenjen nastavljanju začetnega stanja objekta. Posledično ne vrača nobene končne vrednosti.
+
+V kolikor ima kakšen izmed parametrov ne-primitiven podatkovni tip lahko pričakujemo, da bo pri uporabi konstruktorja prišlo do podajanja te vrednosti kot `null`. Običajno želimo dobiti konkreten podatek oziroma objekt, nad katerim lahko izvajamo dodatne operacije oziroma metode. To pomeni, da moramo v konstruktorju preveriti vrednost parametra in potrditi njeno ustreznost.
+
+```java
+// primer ustvarjanja objekta, ki mu podano null kot vrednost parametrov z ne-primitivnim podatkovnim tipom
+Narocilo nok = new Narocilo(null, null, null, 1000, null, null);
+
+// primer ustvarjanja objekta s pričakovanimi vrednostmi
+Narocilo ok = new Narocilo("Ime", "Priimek", "Cesta na naslov 5", 1000, "Ljubljana", "tipkovnica, slušalke, USB ključ");
+```
+
+Uporaba metod nad polji, ki imajo nastavljeno vrednost `null` ni mogoča, saj le-te lahko kličemo nad objekti. V kolikor se nam zgodi, da je polje `null` in nad njim kličemo metodo, se v programu pojavi izjema `NullPointerException`, ki nas opozarja na napačen klic.
+
+```java
+class Narocilo {
+    String imePriimek;
+
+    Narocilo(String ime, String priimek, String naslov, int posta, String kraj, String artikli) {
+         // pozor! v kolikor ima parameter ime ali parameter priimek vrednost null, se v okviru spodnje kode sproži NullPointerException
+        imePriimek = ime.concat(" ").concat(priimek);
+    }
+}
+```
+
+Obstajata dve rešitvi, ki ju lahko uporabimo v takšnim primerih. Parametrom, ki imajo ne-primitiven podatkovni tip določimo privzeto vrednost ali pa uporabimo metode namenskega razreda `java.util.Objects`, ki prožijo izjeme. Za določanje privzete vrednosti parametra uporabimo pogojni stavek ali metodo `Objects.requireNonNullElse`, za proženje izjeme pa `Objects.requireNonNull`.
+
+```java
+class Narocilo {
+    String imePriimek;
+
+    Narocilo(String ime, String priimek, String naslov, int posta, String kraj, String artikli) {
+        // nastavimo privzeto vrednost s pogojnim stavkom
+        ime = (ime == null ? "Ime" : ime);
+        priimek = (priimek == null ? "Priimek" : priimek);
+
+        // ali nastavimo privzeto vrednost z metodo Objects.requireNonNullElse
+        ime = Objects.requireNonNullElse(ime, "Ime");
+        priimek = Objects.requireNonNullElse(ime, "Priimek");
+
+        // ali uporabimo metodo Objects.requireNonNull, ki v primeru null proži izjemo
+        ime = Objects.requireNonNull(ime, "Ime je zahtevano!");
+        priimek = Objects.requireNonNull(priimek, "Priimek je zahtevan!");
+
+        imePriimek = ime.concat(" ").concat(priimek);
+    }
+}
+```
+
 ### Polje
 
 Hranitev podatkov nam omogočajo polja, ki si jih lahko predstavjamo kot globalno spremenljivko razreda. Tako kot spremenljivke je njihov zapis definiran iz podatkovnega tipa in imena.
@@ -117,6 +166,7 @@ Hranitev podatkov nam omogočajo polja, ki si jih lahko predstavjamo kot globaln
 ```java
 class Narocilo {
     String status;
+    String prevzem = "dostava";
 
     Narocilo() {
         status = "novo";
@@ -125,6 +175,27 @@ class Narocilo {
 ```
 
 Poljem za uspešno prevajanje razreda ni potrebno določiti vrednosti, vendar dobijo privzeto vrednost podatkovnega tipa (`String => null`, `int => 0`, ...). Pogosto jim vrednost priredimo šele tekom izvajanja logike, zaradi česar moramo biti pozorni, da ne pride do napačne uporabe - v primeru uporabe razreda (kot podatkovni tip) se lahko zgodi, da polje nima dodeljene reference na dejansko pomnilniško lokacijo objekta in tako pride do nepričakovanega dejanja v programu.
+
+Poleg inicializacije polja neposredno ob deklaraciji ali v konstruktorju obstaja dodaten mehanizem imenovan inicializacijski blok. Gre za klasičen blok s kodo, ki ga zapišemo v razred ob ostalih poljih in se izvede ob konstruiranju objekta, pred konstruktorjem.
+
+```java
+class Narocilo {
+    String status;
+    String prevzem = "dostava";
+    int dobavaDni;
+
+    // inicializacijski blok
+    {
+        dobavaDni = 1;
+    }
+
+    Narocilo() {
+        status = "novo";
+    }
+}
+```
+
+Uporaba tega mehanizma ni pogosta, saj je bolj priročno narediti inicializacijo neposredno ob deklaraciji ali v konstruktorju, v kolikor se navezujemo na vhodne parametre.
 
 ### Metoda
 
@@ -168,6 +239,25 @@ class Narocilo {
     }
 }
 ```
+
+Z vidika uporabe poznamo dve vrsti metod:
+
+- s spremembo _(ang. mutator method)_
+- z dostopom _(ang. accessor method)_
+
+Obe vrsti smo že uporabljali na objektih, ki smo jih ustvarili s pomočjo razredov za delo z nizi. Metode s spremembo smo uporabljali pri objektih razreda `StringBuffer`, z dostopom pa pri objektih razreda `String`.
+
+```java
+StringBuffer sb = new StringBuffer();
+sb.append("hello"); // prožimo metodo s spremembo (ang. mutator method)
+
+String s = "world";
+s.charAt(2); // prožimo metodo z dostopom (ang. accessor method)
+```
+
+Pri metodah s spremembo je bistveno, da z njihovim klicem spremenimo notranje stanje objekta, kar povzroči tudi spremembo njihovega vedenja ali končnih vrednosti metod. S tem vplivamo na prihodnje ukaze v programu, zato se moramo zavedati kaj je posledica izvedbe teh metod.
+
+Pri metodah z dostopom je ravno obratno, saj z njihovim klicem le dostopamo do specifične vrednosti objekta in pri tem ne spremenimo notranjega stanja. Če želimo posodobiti stanje objekta brez, da se to ohrani na obstoječem, naredimo kombinirano metodo, ki vrne nov objekt z želenim stanjem.
 
 ### Poimenovanje
 
@@ -257,6 +347,210 @@ class Narocilo {
         opomba = besedilo;
         opombaPomembnost = pomembnost;
         opombaTip = tip;
+    }
+}
+```
+
+### Implicitni in eksplicitni parametri
+
+Metode operirajo na objektih in dostopajo do polj njihovih instanc. Za primer vzemimo spodnjo metodo `upostevajPopust`.
+
+```java
+class Narocilo {
+    double cenaSkupaj;
+    double popustOdstotek;
+
+    void upostevajPopust(double odstotek) {
+        double popust = cenaSkupaj * odstotek / 100;
+        cenaSkupaj -= popust;
+        popustOdstotek = odstotek;
+    }
+}
+```
+
+Ta nastavi novo vrednost polju `cenaSkupaj` na objektu, kjer kličemo to metodo.
+
+```java
+Narocilo narocilo1 = new Narocilo(...); // ustvarimo novo naročilo
+// izvedemo ostalo programsko logiko v povezavi z naročilom
+narocilo1.upostevajPopust(10); // klic metode
+```
+
+Sedaj prevedemo kodo in parametre metode `upostevajPopust` v psevdokodo, ki ponazarja kaj točno kličemo oziroma kakšne operacije izvedemo.
+
+```text
+double popust = narocilo1.cenaSkupaj * 10 / 100;
+narocilo1.cenaSkupaj -= popust;
+narocilo1.popustOdstotek = odstotek;
+```
+
+Opazimo, da ima metoda `upostevajPopust` v bistvu dva parametra. Prvi je *implicitni* parameter in sicer objekt razreda `Narocilo`. Drugi parameter, ki ga podamo v oklepajih za imenom metode pa je *eksplicitni* parameter. Kot lahko vidimo je eksplicitni parameter izrecno zapisan pri deklaraciji metode, medtem ko implicitni parameter ni neposredno naveden.
+
+Razlog za izogibanje navedbi implicitnega parametra je v kontekstu, saj kodo pišemo v razred, ki mu pripada zapisana logika. Kljub temu se lahko pojavijo situacije, ko moramo biti bolj specifični in navesti implicitni parameter. Zanj obstaja posebna ključna beseda `this`, ki se sklicuje na trenutni kontekst razreda oziroma njegovo instanco. Metodo `upostevajPopust` lahko popravimo in zapišemo še z implicitnim parametrom.
+
+```java
+void upostevajPopust(double odstotek) {
+    double popust = this.cenaSkupaj * odstotek / 100;
+    this.cenaSkupaj -= popust;
+    this.popustOdstotek = odstotek;
+}
+```
+
+Navedba implicitnega parametra nam pride prav, na primer ko imamo v metodi ali konstruktorju parametre z istim imenom, kot polja razreda.
+
+```java
+class Narocilo {
+    String naslov;
+
+    Narocilo(String naslov) {
+        this.naslov = naslov; // uporabimo implicitni parameter za dostop do polja z istim imenom, kot ga ima ime parametra
+    }
+}
+```
+
+Z implicitnim parametrom si pomagamo še, kadar imamo v razredu definiranih več (preobloženih) konstruktorjev in se v enem želimo sklicevati na drugega. Klic obstoječega konstruktorja mora biti podan kot prvi ukaz v trenutnem konstruktorju.
+
+```java
+class Narocilo {
+    int id;
+    String naslov;
+    String dostava;
+    int dostavaDni;
+
+    Narocilo(String naslov) {
+        this.naslov = naslov;
+    }
+
+    Narocilo(String naslov, String dostava) {
+        this(naslov); // kličemo predhodni konstruktor
+        this.dostava = dostava;
+    }
+
+    Narocilo(String naslov, String dostava, int dostavaDni) {
+        this(naslov, dostava); // kličemo predhodni konstruktor
+        this.dostavaDni = dostavaDni;
+    }
+
+    Narocilo(int id, String naslov) {
+        this(naslov, "pošta", 1); // kličemo predhodni konstruktor s privzetimi podatki
+        this.id = id;
+    }
+}
+```
+
+### Dostopnost
+
+Razredi vključujejo dodaten koncept dostopnosti, ki je namenjen omejevanju klicev in pridobivanju vrednosti v posameznih objektih izven specifičnega nivoja. Dostopnost je ključnega pomena za omogočanje enkapsulacije, saj z njo določimo pod kakšnimi pogoji dostopamo do izbranega programskega gradnika. Java pozna dva nivoja dostopov - vrhnjega _(ang. top level)_ in članskega _(ang. member level)_. Vrhnji nivo je določen s paketi _(ang. package)_, članski pa z razredi.
+
+Obstajajo tri stopnje dostopa:
+
+- javni _(ang. public)_
+- zaščiteni _(ang. protected)_
+- zasebni _(ang. private)_
+
+Vsak izmed njih določa iz kje lahko oziroma ne smemo dostopati do posameznega programskega konstrukta. Nivoja dostopov v javi imata določene tudi stopnje:
+
+- vrhnji nivo - javni ali paketno-zasebni _(ang. package-private)_ dostop
+- članski nivo - javni, zaščiteni in zasebni ter paketno-zasebni
+
+V primeru vrhnjega nivoja ali paketa to pomeni, da kadar znotraj njega navedemo javne člane ali razrede, lahko do njih dostopamo iz vseh ostalih paketov. Paketno-zasebni dostop nima svoje posebne stopnje dostopa, vendar pomeni le, da v kolikor ne podamo specifičnega dostopa (za pakete je možen samo javni), je ta gradnik omejen na paket v katerem se nahaja.
+
+V primeru članskega nivoja ali razreda (velja tudi za druge programske konstrukte in njihove lastnosti, ki jih doslej še nismo omenili in spadajo med člane) to pomeni, da kadar znotraj njega navedemo javna polja ali metode ali konstruktorje, lahko do njih dostopamo iz vseh ostalih paketov in razredov. Do zaščitenih polj/metod/konstruktorjev lahko dostopamo samo iz trenutnega paketa. Do zasebnih polj/metod/konstruktorjev lahko dostopamo samo iz trenutnega člana oziroma razreda.
+
+Dostop posameznemu programskemu gradniku omejimo s pomočjo ključnih besed `public`, `protected` in `private`. Napišemo jih pred definicijo razreda (oz. drugega članskega konstrukta), polja, metode ali konstruktorja.
+
+```java
+public class Narocilo {
+    private String naslov;
+    private String dostava;
+
+    private Narocilo(String naslov) {
+        this.naslov = naslov;
+    }
+
+    public Narocilo(String naslov, String dostava) {
+        this(naslov);
+        this.dostava = dostava;
+    }
+
+    public String vrniNaslov() {
+        return naslov;
+    }
+
+    protected String vrniDostavo() {
+        return dostava;
+    }
+}
+```
+
+V kolikor želimo iz določenega dela kode dostopati do drugega, ki je omejen in praviloma do njega nimamo dostopa, se program ne prevede in nam vrne napako.
+
+```java
+Narocilo ok = new Narocilo("naslov", "pošta"); // kliče se javni konstruktor - koda je pravilna
+Narocilo nok = new Narocilo("naslov"); // program se ne prevede, saj je konstruktor s tem parametrom zaseben
+```
+
+Primer dostopa, ki je dovoljen na posameznem nivoju si lahko predstavljamo s pomočjo dveh objektov istega razreda. Na ogled vzemimo zgoraj definiran razred `Narocilo` in zasebno polje z nizom `naslov`. Kot vemo je dostop do zasebnega polja iz metod dovoljen, malo manj običajno pa se zdi, da ko prejmemo kot argument objekt istega razreda, še vedno lahko dostopamo do njegovega zasebnega polja.
+
+```java
+public class Narocilo {
+    private String naslov;
+
+    public Narocilo(String naslov) {
+        this.naslov = naslov;
+    }
+
+    public boolean istiNaslov(Narocilo narocilo) {
+        return narocilo.naslov.equals(naslov); // dostop do zasebnega polja objekta istega razreda je dovoljen
+    }
+}
+```
+
+V glavnem delu programa izvedemo primerjavo in dobimo pričakovan rezultat.
+
+```java
+Narocilo nar1 = new Narocilo("naslov");
+Narocilo nar2 = new Narocilo("naslov");
+System.out.println(nar1.istiNaslov(nar2)); // izpiše se logična vrednost true, saj sta naslova obeh objektov enaka
+```
+
+### Pridobivalci in nastavljalci
+
+Java ima za zaščito internih podatkov razreda poseben koncept, ki mu pravimo pridobivalci in nastavljalci _(ang. getters and setters)_. Namenjen je dopolnjevanju koncepta dostopnosti in omogoča enkapsulacijo v pravem pomenu. Bistveno pri tem je, da so polja razreda zasebna, njihovo vrednost pa dobimo s pomočjo **pridobivalca** _(ang. getter)_ ter jo smemo spreminjati zgolj s pomočjo **nastavljalca** _(ang. setter)_.
+
+Pridobivalec je metoda, ki ima isti podatkovni tip, kot polje katerega vrednost vračamo ter vrača vrednost polja. Po konvenciji imajo vse tovrstne metode predpono `get`. Za primer, če bi želeli dobiti vrednost polja `address` s podatkovnim tipom `String`, bi tako napisali metodo `String getAddress()`.
+
+Nastavljalec je metoda tipa `void`, ki sprejme parameter podatkovnega tipa, ki ustreza polju ter temu polju tudi nastavimo vrednost parametra. Po konvenciji imajo vse tovrstne metode predpono `set`. Za primer, če bi želeli nastaviti vrednost polju `address` s podatkovnim tipom `String`, bi tako napisali metodo `void setAddress(String address)`.
+
+```java
+public class Narocilo {
+    private String naslov;
+
+    public String getNaslov() {
+        return naslov;
+    }
+
+    public void setNaslov(String naslov) {
+        this.naslov = naslov;
+    }
+}
+```
+
+Razlog, da ne dostopamo do polj objektov neposredno je v morebitni logiki, ki jo ima pridobivanje ali nastavljanje. V kolikor ta obstaja, bi neposreden dostop/spreminjanje lahko vplivalo na stanje objekta in s tem privedlo do nepričakovanih situacij, ki jih logika razreda ne zajema. V pridobivalce in nastavljalce torej pišemo tudi kodo, ki zajema vso logiko za ustrezno spremembo stanja razreda, v kolikor je ta zahtevana. Nastavljalci lahko opravljajo tudi preverjanje vrednosti parametra in to vrednost nastavijo na polje le pod določenim pogojem ali v primeru nepravilnih vrednost sprožijo izjemo.
+
+```java
+public class Narocilo {
+    private String naslov;
+
+    public String getNaslov() {
+        return naslov;
+    }
+
+    public void setNaslov(String naslov) {
+        Objects.requireNonNull(naslov, "Naslov mora biti dejanski niz!");
+        if (naslov.toLowerCase().startsWith("cesta")) {
+            this.naslov = naslov;
+        }
     }
 }
 ```
