@@ -572,6 +572,195 @@ class Naloga5 {
 
 Želimo sestaviti računalnik po posameznih komponentah in izračunati skupno končno ceno. Ustvarite razred `Racunalnik` s pripadajočimi lastnostmi (posamezne komponente), katere je možno nastaviti z `nastavi[komponenta](Komponenta komponenta)` in odstraniti z `odstrani[komponenta](Komponenta komponenta)` (oznako `[komponenta]` nadomestite z imenom lasnosti) in vedenjem `skupnaCena`, `skupnaCena(double popust)`, `izpisKomponent` (izpiše posamezne komponente s predpono imena komponente in nato nazivom artikla), `kosarica` (izpiše naziv artikla in ceno). Ustvarite še vsebovani razred `Komponenta`, ki hrani naziv artikla in ceno ter ima metodi `vrniNaziv` in `vrniCeno`. Sestavite ustrezne objekte in izpišite komponente, skupno ceno in skupno ceno z 10% popustom.
 
+Rešitev:
+
+<details>
+<summary>Racunalnik.java</summary>
+
+```java
+public class Racunalnik {
+    private Komponenta maticnaPlosca;
+    private Komponenta procesor;
+    private Komponenta pomnilnik;
+    private Komponenta napajalnik;
+    private Komponenta graficnaKartica;
+    private Komponenta ohisje;
+    private Komponenta mreznaKartica;
+
+    private Komponenta[] tabelaKomponent() {
+        return new Komponenta[] {
+            maticnaPlosca,
+            procesor,
+            pomnilnik,
+            napajalnik,
+            graficnaKartica,
+            ohisje,
+            mreznaKartica
+        };
+    }
+
+    public void setMaticnaPlosca(Komponenta maticnaPlosca) {
+        this.maticnaPlosca = maticnaPlosca;
+    }
+
+    public void odstraniMaticnoPlosco() {
+        maticnaPlosca = null;
+    }
+
+    public void setProcesor(Komponenta procesor) {
+        this.procesor = procesor;
+    }
+
+    public void odstraniProcesor() {
+        procesor = null;
+    }
+
+    public void setPomnilnik(Komponenta pomnilnik) {
+        this.pomnilnik = pomnilnik;
+    }
+
+    public void odstraniPomnilnik() {
+        maticnaPlosca = null;
+    }
+
+    public void setNapajalnik(Komponenta napajalnik) {
+        this.napajalnik = napajalnik;
+    }
+
+    public void odstraniNapajalnik() {
+        napajalnik = null;
+    }
+
+    public void setGraficnaKartica(Komponenta graficnaKartica) {
+        this.graficnaKartica = graficnaKartica;
+    }
+
+    public void odstraniGraficnaKartica() {
+        graficnaKartica = null;
+    }
+
+    public void setOhisje(Komponenta ohisje) {
+        this.ohisje = ohisje;
+    }
+
+    public void odstraniOhisje() {
+        ohisje = null;
+    }
+
+    public double skupnaCena() {
+        double skupnaCena = 0.0;
+        for (Komponenta komponenta : tabelaKomponent()) {
+            if (komponenta != null) {
+                skupnaCena += komponenta.getCena();
+            }
+        }
+        return skupnaCena;
+    }
+
+    public double skupnaCena(double popustOdstotek) {
+        double skupnaCena = skupnaCena();
+        double popust = skupnaCena * popustOdstotek / 100;
+        return skupnaCena - popust;
+    }
+
+    public void izpisKomponent() {
+        boolean obstaja = false;
+        if (maticnaPlosca != null) {
+            System.out.println("Matična plošča: " + maticnaPlosca.getNaziv());
+            obstaja = true;
+        }
+        if (procesor != null) {
+            System.out.println("Procesor: " + procesor.getNaziv());
+            obstaja = true;
+        }
+        if (pomnilnik != null) {
+            System.out.println("Pomnilnik: " + pomnilnik.getNaziv());
+            obstaja = true;
+        }
+        if (napajalnik != null) {
+            System.out.println("Napajalnik: " + napajalnik.getNaziv());
+            obstaja = true;
+        }
+        if (graficnaKartica != null) {
+            System.out.println("Grafična kartica: " + graficnaKartica.getNaziv());
+            obstaja = true;
+        }
+        if (ohisje != null) {
+            System.out.println("Ohišje: " + ohisje.getNaziv());
+            obstaja = true;
+        }
+        if (mreznaKartica != null) {
+            System.out.println("Mrežna kartica: " + mreznaKartica.getNaziv());
+            obstaja = true;
+        }
+        if (!obstaja) {
+            System.out.println("Računalnik nima komponent.");
+        }
+    }
+
+    public void kosarica() {
+        System.out.println("Komponenta, Cena");
+        for (Komponenta komponenta : tabelaKomponent()) {
+            if (komponenta == null) {
+                continue;
+            }
+            System.out.printf("%s, %f\n", komponenta.getNaziv(), komponenta.getCena());
+        }
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Komponenta.java</summary>
+
+```java
+public class Komponenta {
+    private String naziv;
+    private double cena;
+
+    public Komponenta(String naziv, double cena) {
+        this.naziv = naziv;
+        this.cena = cena;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public double getCena() {
+        return cena;
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Naloga6.java</summary>
+
+```java
+class Naloga6 {
+    public static void main(String[] args) {
+        Racunalnik racunalnik = new Racunalnik();
+        racunalnik.setMaticnaPlosca(new Komponenta("Asus P5QL Pro", 90));
+        racunalnik.setProcesor(new Komponenta("Intel Xeon E5-2670 v4", 1100));
+        racunalnik.setPomnilnik(new Komponenta("Crucial Sport 16GB", 120));
+        racunalnik.setNapajalnik(new Komponenta("Corsair 750W", 110));
+        racunalnik.setGraficnaKartica(new Komponenta("RTX3090", 3600));
+        racunalnik.setOhisje(new Komponenta("Cooler Master ABC", 70));
+
+        racunalnik.izpisKomponent();
+        System.out.println("-----");
+        System.out.println("Skupna cena: " + racunalnik.skupnaCena());
+        System.out.println("Skupna cena z 10% popustom: " + racunalnik.skupnaCena(10));
+    }
+}
+```
+
+</details>
+
 ## Naloga 7
 
 V organizaciji imamo zaposlene, katerih število se zaradi obsega dela povečuje dnevno. Ustvarite razred `Organizacija`, ki hrani tabelo zaposlenih z vedenjem `steviloZaposlenih`, `dodajZaposlenega(Zaposleni zaposleni)`, `odstraniZaposlenega(Zaposleni zaposleni)`, `idZaposlenega(Zaposleni zaposleni)`, `skupajPlace` (izračuna skupni mesečni znesek plač) in `izpisiZaposlene` (izpiše ime vsakega zaposlenega in plačo). Ima naj prazen konstruktor, konstruktor, ki sprejme začetno število zaposlenih in konstruktor, ki sprejme začetne zaposlene. Ustvarite razred `Zaposleni`, ki hrani ime in priimek zaposlenega ter njegovo mesečno plačo, z vedenjem `vrniIme` in `vrniPlaco`. Sestavite ustrezne objekte, dodajte 3 privzete zaposlene in omogočite uporabniku vnos dodatnih (pred oz. po vnosu posameznega ga vprašajte, če želi nadaljevati z dodajanjem).
