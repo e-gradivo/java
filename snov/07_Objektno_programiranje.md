@@ -248,8 +248,10 @@ Z vidika uporabe poznamo dve vrsti metod:
 Obe vrsti smo že uporabljali na objektih, ki smo jih ustvarili s pomočjo razredov za delo z nizi. Metode s spremembo smo uporabljali pri objektih razreda `StringBuffer`, z dostopom pa pri objektih razreda `String`.
 
 ```java
-StringBuffer sb = new StringBuffer();
+StringBuffer sb = new StringBuffer(3); // s konstruktorjem nastavimo kapaciteto na 3
+sb.capacity(); // klic metode, ki vrne trenutno kapaciteto 3
 sb.append("hello"); // prožimo metodo s spremembo (ang. mutator method)
+sb.capacity(); // ponovni klic metode, ki kot rezultat proženja metode s spremembo vrne spremenjeno kapaciteto 8
 
 String s = "world";
 s.charAt(2); // prožimo metodo z dostopom (ang. accessor method)
@@ -258,6 +260,18 @@ s.charAt(2); // prožimo metodo z dostopom (ang. accessor method)
 Pri metodah s spremembo je bistveno, da z njihovim klicem spremenimo notranje stanje objekta, kar povzroči tudi spremembo njihovega vedenja ali končnih vrednosti metod. S tem vplivamo na prihodnje ukaze v programu, zato se moramo zavedati kaj je posledica izvedbe teh metod.
 
 Pri metodah z dostopom je ravno obratno, saj z njihovim klicem le dostopamo do specifične vrednosti objekta in pri tem ne spremenimo notranjega stanja. Če želimo posodobiti stanje objekta brez, da se to ohrani na obstoječem, naredimo kombinirano metodo, ki vrne nov objekt z želenim stanjem.
+
+Koncept uporabe metod torej lahko vzamemo v kontekst spremenljivih _(ang. mutable)_ in nespremenljivih _(ang. immutable)_ razredov oziroma objektov.
+
+Za spremenljive upoštevamo vedenje, kot v zgornjem primeru pri uporabi razreda `StringBuffer`, kjer metoda z dostopom vrača podatek notranjega stanja objekta, metoda s spremembo pa vpliva neposredno na notranje stanje taistega objekta.
+
+Pri nespremenljivih objektih so vse uporabniku dostopne metode, metode z dostopom. To pomeni, da ne spremeninjamo notranjega stanja objekta nad katerim izvedemo metodo, temveč vnemo nov objekt, ki ima nastavljeno notranje stanje glede na izbrano logiko klicane metode. Primer takšnega razreda je `String`.
+
+```java
+String niz = new String("dober"); // ustvarimo objekt "niz" in mu nastavimo vrednost
+String novNiz = niz.concat(" dan"); // objektu "niz" pridružimo dodatno vrednost s pomočjo metode concat, ki združi obstoječo vrednost objekta (notranje stanje) in vrednost podano prek parametra in vrne nov objekt tipa String
+// objektu niz se po izvedbi zadnjega ukaza vrednost ohrani, saj je razred String nespremenljiv in tako vse metode, ki jih kličemo nad tem objektom ustvarijo nov objekt z želeno vrednostjo
+```
 
 ### Poimenovanje
 
@@ -299,7 +313,7 @@ Objekte razredov, ki tvorijo logično celoto med seboj povezujemo. Najbolj pogos
 
 ### Preobložitev _(ang. overloading)_
 
-Razred ali metoda na osnovi podanih parametrov lahko spremenita vedenje oziroma končni rezultat. Iz tega razloga v Javi obstaja možnost preobložitve konstruktorja in metode. Pomen tega izraza je zgolj v tem, da smemo v kodi konstruktor/metodo napisati večkrat, pri čemer mora imeti podane različne parametre (v nasprotnem primeru nas na napako opozori prevajalnik). Na osnovi različnih parametrov lahko prilagodimo logiko delovanja razreda ali metode in tako obravnavamo dodatne primere, ki se pojavijo med razvojem programa.
+Razred ali metoda na osnovi podanih parametrov lahko spremenita vedenje oziroma končni rezultat. Iz tega razloga v Javi obstaja možnost preobložitve konstruktorja in metode. Pomen tega izraza je zgolj v tem, da smemo v kodi konstruktor/metodo napisati večkrat, pri čemer mora imeti podane različne parametre (v nasprotnem primeru nas na napako opozori prevajalnik). Ti se morajo razlikovati na osnovi podatkovnega tipa in njihovega števila (imamo lahko na primer več preobloženih metod s samo enim parametrom, vendar mora vsaka vsebovati parameter z drugačnim podatkovnim tipom). Na osnovi različnih parametrov lahko prilagodimo logiko delovanja razreda ali metode in tako obravnavamo dodatne primere, ki se pojavijo med razvojem programa.
 
 ```java
 class Narocilo {
@@ -314,6 +328,11 @@ class Narocilo {
     Narocilo(int idParam) { // preobložen konstruktor s parametrom
         id = idParam;
         status = "novo";
+    }
+
+    Narocilo(String statusParam) { // preobložen konstruktor s parametrom, ki se po podatkovnem tipu razlikuje od obstoječega
+        id = 1;
+        status = statusParam;
     }
 
     Narocilo(int idParam, String statusParam) { // preobložen konstruktor z dvema parametroma
@@ -554,3 +573,224 @@ public class Narocilo {
     }
 }
 ```
+
+### Statična polja in metode
+
+V vseh razredih naših dosedanjih programov, ki smo jih napisali z namenom neposrednega izvajanja, smo uporabili metodo `main`. Njen zapis smo vedno navedli kot `public static void main(String[] args)`, v katerem opazimo še eno ključno besedo `static`, ki ji še nismo posvetili posebne pozornosti. Statična polja in metode nekoliko spremenijo logiko s katero smo do sedaj razmišljali o objektnem programiranju. Bistvena sprememba je pri konceptu notranjega stanja, ki ga statični programski konstrukti odpravljajo, zato moramo pri njih razmišljati globalno in ne v povezavi s točno določenim objektom oziroma instanco razreda.
+
+#### Polja
+
+Uporaba ključne besede `static` v povezavi s poljem razreda ustvari enkratno polje oziroma vrednost, ki je določena vsem instancam poljubnega razreda. V kolikor ustvarimo več objektov tega poljubnega razreda in se v njem sklicujemo na statično polje, bo njegova vrednost ista, ne glede na objekt v katerem je sklic naveden. Delovanje tega si najlažje predstavljamo tako, da ločimo med statičnimi polji in polji instance. Statična polja so na nek način globalna za vse instance, medtem ko polja instance določajo notranje stanje tega objekta in so vezane neposredno nanj.
+
+```java
+public class Narocilo {
+    private static int naslednjiId = 1;
+    private int id;
+
+    public Narocilo() {
+        id = naslednjiId++;
+    }
+
+    public int getId() {
+        return id;
+    }
+}
+```
+
+V primeru razreda `Narocilo` vidimo statično polje `naslednjiId` in polje instance `id`. V konstruktorju nastavimo vrednost na polje `id` s pomočjo statičnega polja `naslednjiId`, ki hrani na nek način globalno vrednost IDjev med vsemi obstoječimi objekti razreda `Narocilo` v programu.
+
+```java
+Narocilo nar1 = new Narocilo(); // ustvarimo nov objekt, ki bo dobil trenutni "naslednjiId"
+System.out.println(nar1.getId()); // izpiše se 1, saj je bila vrednost polja "naslednjiId" enaka 1
+
+Narocilo nar2 = new Narocilo(); // ustvarimo dodatni nov objekt, ki bo dobil povečano vrednost polja "naslednjiId"
+System.out.println(nar2.getId()); // izpiše se 2, saj je bila prejšnja vrednost polja "naslednjiId" povečana v konstruktorju
+
+Narocilo nar3 = new Narocilo(); // ustvarimo še en nov objekt, ki bo spet dobil povečano vrednost polja "naslednjiId"
+System.out.println(nar3.getId()); // izpiše se 3, saj je bila prejšnja vrednost polja "naslednjiId" v konstruktorju povečana
+```
+
+Iz primera uporabe razreda `Narocilo` se lahko prepričamo, da bo vsaka instanca pridobila in ohranila svojo vrednost polja `id`, medtem ko je vrednost polja `naslednjiId` na začetku in po vsaki spremembi pri vseh ista. Polje `id` je tako v posesti posameznega objekta, polje `naslednjiId` pa v posesti izbranega razreda. Drugače zapisano to pomeni, da polje `id` obstaja zgolj kadar obstaja instanca razreda, polje `naslednjiId` pa je vezano neposredno na razred in obstaja že ob njegovi prvi navedbi v kodi.
+
+Način generiranja IDjev v primeru je uporabljen zgolj za referenco prikaza delovanja statičnih polj. V kolikor bi v programu imeli več kontekstov z uporabo razreda `Narocilo`, bi dobili deljeno vrednost v polju `naslednjiId`, ki bi se prenašala med obemi konteksti. Tega zaradi ločevanja logike najverjetneje ne želimo, zato se takšnemu generiranju IDjev v dejanskih aplikacijah izogibamo.
+
+### Konstante
+
+Statična polja redko uporabimo v kodi, saj je smiselnost uporabe takšnega pristopa pri objektnem programiranju majhna. Za razliko od statičnih polj pa pogosto uporabimo statične konstante oziroma statična končna polja. Doslej smo se že nekajkrat srečali z uporabo statičnih konstant pri matematičnih operacijah, zato v nadaljevanju poglejmo njihov zapis v [izvorni kodi](https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/lang/Math.java) razreda `Math` iz standardne knjižnice.
+
+```java
+public final class Math {
+    // ...
+
+    public static final double E = 2.7182818284590452354;
+
+    public static final double PI = 3.14159265358979323846;
+
+    // ...
+}
+```
+
+Kot vemo do dejanskih vrednosti statičnih konstant dostopamo z navedbo razreda in njenega statičnega polja, na primer `Math.PI`.
+
+Pri izpisu podatkov v konzolo uporabljamo statično konstanto `System.out`, ki hrani objekt nad katerim nato kličemo na primer metodi `print` in `println`.
+
+```java
+public final class System {
+    // ...
+
+    public final static PrintStream out = nullPrintStream();
+
+    // ...
+}
+```
+
+V prejšnjih dveh podpoglavjih smo omenili, da poljem zaradi preprečevanja zunanjega spreminjanja vedno nastavimo zasebno stopnjo dostopa. Pri statičnih konstantah pa na primeru dveh razredov iz standardne knjižnice vidimo, da to ne drži povsem. Zavedati se moramo, da je pri tovrstnih poljih logika uporabe nekoliko drugačna, saj do omenjenih konstant želimo dostopati iz kjerkoli - naj bo to iz metode, kjer izvedemo poljuben matematični izračun ali pa iz metode `main`, kjer želimo opraviti nek izpis v konzolo. To za običajna polja na razredu ne velja, saj so vendar namenjena le točno določeni instanci.
+
+```java
+public class Narocilo {
+    public static final String oznakaPredpona = "NAROCILO123TRGOVINAX";
+    private int id;
+
+    public String getOznaka() {
+        return String.format("%s_%d", oznakaPredpona, id);
+    }
+}
+```
+
+Bistvena razlika med statičnim poljem in statično konstanto je v ključni besedi `final`. Omogoča nam, da po inicializaciji polja ne moremo več spreminjati njegove vrednosti.
+
+```java
+System.out.println(Narocilo.oznakaPredpona); // izpišemo statično konstanto
+Narocilo.oznakaPredpona = "POLJUBNA_VREDNOST"; // pri poskusu spreminjanja vrednosti nam prevajalnik javi napako
+```
+
+### Metode
+
+Metode, ki ne operirajo neposredno na objektu, kličemo statične metode. Tako kot statična polja in statične konstante, so te metode v posesti razreda in ne njegovih instanc.
+
+```java
+Math.pow(2, 3); // vrne vrednost izračuna 2^3
+```
+
+Na primeru statične metode `pow` v razredu `Math` vidimo, da za njeno delovanje nismo potrebovali ustvariti instance (ki je mimogrede ta razred sploh ne dopusti ustvariti), temveč smo se sklicevali neposredno na razred in njegovo metodo. Statični programski konstrukti ne delujejo v okviru stanja objekta, zato tudi nimajo dostopa do implicitnega parametra `this`.
+
+```java
+public class Narocilo {
+    private static final String oznakaPredpona = "NAROCILO123TRGOVINAX";
+
+    public static String getOznakaPredpona() {
+        return oznakaPredpona;
+    }
+
+    public static String sestaviOznako(String vrednost) {
+        return String.format("%s_%s", oznakaPredpona, vrednost);
+    }
+
+    public static String sestaviOznako(int vrednost) {
+        return sestaviOznako(Integer.toString(vrednost));
+    }
+}
+```
+
+Iz statičnih metod lahko dostopamo do drugih statičnih programskih konstruktov definiranih v razredu. To pomeni, da se ob zapisu imena izbranega konstrukta v bloku statične metode prav tako sklicujemo na statični konstrukt, saj sklici na ne-statične konstrukte razreda niso veljavni (prevajalnik javi napako). Nasprotno velja za instance razreda, kjer se je iz metod možno sklicevati na statične konstrukte. Sklicevanje na statične konstrukte na objektu je prav tako možno, vendar iz oblikovnih in logičnih razlogov ni priporočeno.
+
+```java
+Narocilo.sestaviOznako("vrednost"); // veljaven klic statične metode
+Narocilo.sestaviOznako(12345); // veljaven klic preobložene statične metode
+
+Narocilo narocilo = new Narocilo(); // ustvarimo objekt
+narocilo.sestaviOznako("vrednost_instance"); // veljaven klic statične metode nad objektom, vendar ni priporočen
+```
+
+Uporaba statičnih metod je smotrna v naslednjih dveh primerih:
+
+- Ko metoda ne potrebuje objekta nad katerim potrebujemo dostopati do njegovega stanja, saj imamo vse parametre podane eksplicitno (npr. `Narocilo.sestaviOznako`)
+- Ko metoda dostopa zgolj do statičnega polja izbranega razreda (npr. `Narocilo.getOznakaPredpona`)
+
+## Metode tovarne _(ang. factory methods)_
+
+Statične metode pogosto uporabljamo v povezavi z metodami tovarne. Koncept v ozadju temelji na resničnem delovanju tovarn - te običajno omogočajo izdelavo končnega izdelka v več različicah, ki so namenjene drugačnim končnim uporabnikom (za lažjo predstavo lahko vzamemo primer prenosnega računalnika - obstaja več različnih vrst: _utrabook_, pisarniški, _gaming_, ... V vseh primerih gre za prenosni računalnik, le da po specifikacijah ustreza izbrani vrsti uporabe). Podobno je pri metodah tovarne, kjer uporabimo statične metode v izbranem razredu, da ustvarimo njegovo instanco glede na vrsto končne uporabe tega objekta.
+
+```java
+public class Narocilo {
+    private String id;
+    private String ime;
+    private String priimek;
+    private String naslov;
+    private String[] artikli;
+
+    // zasebni konstruktor
+    private Narocilo(String id, String[] artikli) {
+        this.id = id;
+        this.artikli = artikli;
+    }
+
+    // zasebni konstruktor
+    private Narocilo(String ime, String priimek, String naslov, String[] artikli) {
+        this.ime = ime;
+        this.priimek = priimek;
+        this.naslov = naslov;
+        this.artikli = artikli;
+    }
+
+    // javna statična metoda s specifičnim imenom in namenom uporabe - metoda tovarne
+    public static Narocilo registriranUporabnik(String id, String[] artikli) {
+        return new Narocilo(id, artikli);
+    }
+
+    // javna statična metoda s specifičnim imenom in namenom uporabe - metoda tovarne
+    public static Narocilo anonimniUporabnik(String ime, String priimek, String naslov, String[] artikli) {
+        return new Narocilo(ime, priimek, naslov, artikli);
+    }
+}
+```
+
+Metode tovarn uporabljamo namesto konstruktorjev, razloga zato sta:
+
+- Konstruktorjev ne moremo poimenovati glede na logiko kode, ki jo napišemo v njen blok. V kodi želimo izrecno poudariti namen uporabe ustvarjenega objekta, zaradi česar so običajno drugačne tudi vrednost parametrov konstruktorja.
+
+- Kadar uporabimo konstruktor dobimo objekt razreda, ki smo ga konstruirali. V nadaljevanju se bomo spoznali z izpeljanimi razredi, katerih instance se v metodah tovarn vračajo glede na vrsto njihove uporabe. Tako lahko v metodi izberemo kateri izpeljan razred bo ustrezen za podano vrsto uporabe in za razliko od konstruktorja vrnemo njegovo instanco neposredno s pomočjo ključne besede `return`.
+
+## Metoda `main`
+
+Glavna metoda kateregakoli programa, ki ga želimo pognati je metoda `main`. Kot vemo za klic statičnih metod ne potrebujemo objektov, temveč se nanje lahko sklicujemo preko razreda. Prav iz tega razloga je statična tudi metoda `main`.
+
+```java
+public class Aplikacija {
+    public static void main(String[] args) {
+        // koda programa
+    }
+}
+```
+
+Java ob zagonu prevedenega razreda preveri ali v njem obstaja statična metoda `main`. V primeru, da to drži se prične izvajati koda, ki smo jo zapisali v njenem bloku. V nasprotnem primeru pa nas izvajalno okolje opozori, da v razredu omenjena metoda ne obstaja in mora biti za zagon programa tudi prisotna. Metodo `main` zaradi tega lahko poimenujemo tudi vstopna točka v program, saj v njej konstruiramo vse objekte, ki jih potrebujemo za nadaljnje delovanje našega programa.
+
+## Statični inicializacijski blok
+
+Inicializacijski blok in konstruktor se prožita ob ustvarjanju novega objekta s pomočjo ključne besede `new`. Inicializacijo statičnih polj za razliko od objektov lahko naredimo samo neposredno ob deklaraciji polja ali s pomočjo statičnih inicializacijskih blokov. Vrednosti se statičnim poljem nastavijo ob prvem nalaganju razreda v Javanski navidezni stroj, kar velja tudi za proženje statičnega inicializacijskega bloka.
+
+```java
+public class Narocilo {
+    private static final String oznakaPredpona = "NAROCILO123TRGOVINAX";
+
+    private static final String[] oznakaPredponaDeli;
+
+    // statični inicializacijski blok
+    static {
+        oznakaPredponaDeli = new String[3];
+        oznakaPredponaDeli[0] = "NAROCILO";
+        oznakaPredponaDeli[1] = "123";
+        oznakaPredponaDeli[2] = "TRGOVINAX";
+    }
+
+    public static String getOznakaPredpona() {
+        return oznakaPredpona;
+    }
+
+    public static String[] getOznakaPredponaDeli() {
+        return oznakaPredponaDeli;
+    }
+}
+```
+
+Statični inicializacijski blok zapišemo kot inicializacijski blok razreda, le da pred zavite oklepaje zapišemo še ključno besedo `static`. Razlog za uporabo tovrstnih blokov je izvajanje zahtevnejše logike, ki je ob deklaraciji statičnega polja ne moremo zapisati. Bloki se izvedejo v vrstnem redu zapisa v razredu, kot velja tudi pri inicializacijskih blokih razreda.
