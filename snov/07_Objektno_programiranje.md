@@ -709,7 +709,7 @@ Uporaba statičnih metod je smotrna v naslednjih dveh primerih:
 
 #### Metode tovarne _(ang. factory methods)_
 
-Statične metode pogosto uporabljamo v povezavi z metodami tovarne. Koncept v ozadju temelji na resničnem delovanju tovarn - te običajno omogočajo izdelavo končnega izdelka v več različicah, ki so namenjene drugačnim končnim uporabnikom (za lažjo predstavo lahko vzamemo primer prenosnega računalnika - obstaja več različnih vrst: _utrabook_, pisarniški, _gaming_, ... V vseh primerih gre za prenosni računalnik, le da po specifikacijah ustreza izbrani vrsti uporabe). Podobno je pri metodah tovarne, kjer uporabimo statične metode v izbranem razredu, da ustvarimo njegovo instanco glede na vrsto končne uporabe tega objekta.
+Statične metode pogosto uporabljamo v povezavi z metodami tovarne. Koncept v ozadju temelji na resničnem delovanju tovarn - te običajno omogočajo izdelavo končnega izdelka v več različicah, ki so namenjene drugačnim končnim uporabnikom (za lažjo predstavo lahko vzamemo primer prenosnega računalnika - obstaja več različnih vrst: _ultrabook_, pisarniški, _gaming_, ... V vseh primerih gre za prenosni računalnik, le da po specifikacijah ustreza izbrani vrsti uporabe). Podobno je pri metodah tovarne, kjer uporabimo statične metode v izbranem razredu, da ustvarimo njegovo instanco glede na vrsto končne uporabe tega objekta.
 
 ```java
 public class Narocilo {
