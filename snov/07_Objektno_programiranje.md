@@ -614,7 +614,7 @@ Iz primera uporabe razreda `Narocilo` se lahko prepričamo, da bo vsaka instanca
 
 Način generiranja IDjev v primeru je uporabljen zgolj za referenco prikaza delovanja statičnih polj. V kolikor bi v programu imeli več kontekstov z uporabo razreda `Narocilo`, bi dobili deljeno vrednost v polju `naslednjiId`, ki bi se prenašala med obemi konteksti. Tega zaradi ločevanja logike najverjetneje ne želimo, zato se takšnemu generiranju IDjev v dejanskih aplikacijah izogibamo.
 
-### Konstante
+#### Konstante
 
 Statična polja redko uporabimo v kodi, saj je smiselnost uporabe takšnega pristopa pri objektnem programiranju majhna. Za razliko od statičnih polj pa pogosto uporabimo statične konstante oziroma statična končna polja. Doslej smo se že nekajkrat srečali z uporabo statičnih konstant pri matematičnih operacijah, zato v nadaljevanju poglejmo njihov zapis v [izvorni kodi](https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/lang/Math.java) razreda `Math` iz standardne knjižnice.
 
@@ -664,7 +664,7 @@ System.out.println(Narocilo.oznakaPredpona); // izpišemo statično konstanto
 Narocilo.oznakaPredpona = "POLJUBNA_VREDNOST"; // pri poskusu spreminjanja vrednosti nam prevajalnik javi napako
 ```
 
-### Metode
+#### Metode
 
 Metode, ki ne operirajo neposredno na objektu, kličemo statične metode. Tako kot statična polja in statične konstante, so te metode v posesti razreda in ne njegovih instanc.
 
@@ -707,7 +707,7 @@ Uporaba statičnih metod je smotrna v naslednjih dveh primerih:
 - Ko metoda ne potrebuje objekta nad katerim potrebujemo dostopati do njegovega stanja, saj imamo vse parametre podane eksplicitno (npr. `Narocilo.sestaviOznako`)
 - Ko metoda dostopa zgolj do statičnega polja izbranega razreda (npr. `Narocilo.getOznakaPredpona`)
 
-## Metode tovarne _(ang. factory methods)_
+#### Metode tovarne _(ang. factory methods)_
 
 Statične metode pogosto uporabljamo v povezavi z metodami tovarne. Koncept v ozadju temelji na resničnem delovanju tovarn - te običajno omogočajo izdelavo končnega izdelka v več različicah, ki so namenjene drugačnim končnim uporabnikom (za lažjo predstavo lahko vzamemo primer prenosnega računalnika - obstaja več različnih vrst: _utrabook_, pisarniški, _gaming_, ... V vseh primerih gre za prenosni računalnik, le da po specifikacijah ustreza izbrani vrsti uporabe). Podobno je pri metodah tovarne, kjer uporabimo statične metode v izbranem razredu, da ustvarimo njegovo instanco glede na vrsto končne uporabe tega objekta.
 
@@ -751,7 +751,7 @@ Metode tovarn uporabljamo namesto konstruktorjev, razloga zato sta:
 
 - Kadar uporabimo konstruktor dobimo objekt razreda, ki smo ga konstruirali. V nadaljevanju se bomo spoznali z izpeljanimi razredi, katerih instance se v metodah tovarn vračajo glede na vrsto njihove uporabe. Tako lahko v metodi izberemo kateri izpeljan razred bo ustrezen za podano vrsto uporabe in za razliko od konstruktorja vrnemo njegovo instanco neposredno s pomočjo ključne besede `return`.
 
-## Metoda `main`
+#### Metoda `main`
 
 Glavna metoda kateregakoli programa, ki ga želimo pognati je metoda `main`. Kot vemo za klic statičnih metod ne potrebujemo objektov, temveč se nanje lahko sklicujemo preko razreda. Prav iz tega razloga je statična tudi metoda `main`.
 
@@ -765,7 +765,7 @@ public class Aplikacija {
 
 Java ob zagonu prevedenega razreda preveri ali v njem obstaja statična metoda `main`. V primeru, da to drži se prične izvajati koda, ki smo jo zapisali v njenem bloku. V nasprotnem primeru pa nas izvajalno okolje opozori, da v razredu omenjena metoda ne obstaja in mora biti za zagon programa tudi prisotna. Metodo `main` zaradi tega lahko poimenujemo tudi vstopna točka v program, saj v njej konstruiramo vse objekte, ki jih potrebujemo za nadaljnje delovanje našega programa.
 
-## Statični inicializacijski blok
+#### Statični inicializacijski blok
 
 Inicializacijski blok in konstruktor se prožita ob ustvarjanju novega objekta s pomočjo ključne besede `new`. Inicializacijo statičnih polj za razliko od objektov lahko naredimo samo neposredno ob deklaraciji polja ali s pomočjo statičnih inicializacijskih blokov. Vrednosti se statičnim poljem nastavijo ob prvem nalaganju razreda v Javanski navidezni stroj, kar velja tudi za proženje statičnega inicializacijskega bloka.
 
