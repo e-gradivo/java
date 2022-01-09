@@ -747,7 +747,7 @@ public class Narocilo {
 
 Metode tovarn uporabljamo namesto konstruktorjev, razloga zato sta:
 
-- Konstruktorjev ne moremo poimenovati glede na logiko kode, ki jo napišemo v njen blok. V kodi želimo izrecno poudariti namen uporabe ustvarjenega objekta, zaradi česar so običajno drugačne tudi vrednost parametrov konstruktorja.
+- Konstruktorjev ne moremo poimenovati glede na logiko kode, ki jo napišemo v njen blok. V kodi želimo izrecno poudariti namen uporabe ustvarjenega objekta, zaradi česar so običajno drugačne tudi vrednosti parametrov konstruktorja.
 
 - Kadar uporabimo konstruktor dobimo objekt razreda, ki smo ga konstruirali. V nadaljevanju se bomo spoznali z izpeljanimi razredi, katerih instance se v metodah tovarn vračajo glede na vrsto njihove uporabe. Tako lahko v metodi izberemo kateri izpeljan razred bo ustrezen za podano vrsto uporabe in za razliko od konstruktorja vrnemo njegovo instanco neposredno s pomočjo ključne besede `return`.
 
