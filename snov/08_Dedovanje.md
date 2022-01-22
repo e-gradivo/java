@@ -242,3 +242,120 @@ public class Main {
 V okviru tabele smo uporabili že prej ustvarjen objekt `manager`, poleg katerega smo dodali še dve instanci razreda `Zaposleni`. Na koncu smo izpisali ime in plačo posameznega zaposlenega s pomočjo metod `getImePriimek` in `getPlaca`. Po izpisu opazimo, da metoda `getPlaca` vrača pravilen znesek glede na razred objekta - za `Zaposleni` se upošteva osnovna plača, ki jo podamo prek konstruktorja, za `Manager` pa osnovna plača združena še z bonusom, kot smo implementirali logiko v prepisano metodo.
 
 Opazimo, da v obeh primerih kličemo isto metodo `getPlaca`, le da se ta enkrat navezuje na razred `Zaposleni` in drugič na razred `Manager`. Klic metode se vedno opravi na razredu, katerega instanca je objekt. Vemo, da `Manager` **je** `Zaposleni`, zato lahko podrazred vedno uporabimo tudi tam, kjer pravzaprav želimo uporabiti funkcionalnost nadrazreda. Navidezni javanski stroj v ozadju pozna dejanske tipe objektov, zato se vedno proži specifična logika za izbran razred, če ta prepisuje logiko starša. Koncept, ki omogoča referenciranje na več različnih tipov razreda, se imenuje **polimorfizem** _(ang. polymorphism)_. Samodejnemu izbiranju ustrezne metode glede na razred instance v času izvajanja _(ang. runtime)_ pa pravimo **dinamično povezovanje** _(ang. dynamic binding)_.
+
+### Hierarhije dedovanja
+
+Dedovanje razredov ni omejeno na en nivo razširjanja, temveč lahko vsak podrazred uporabimo kot nadrazred njegovemu podrazredu. Na osnovi primera lahko razred `Manager` razširimo v podrazredu `Vodja`. Nabor vseh razredov, ki izhajajo iz enega skupnega nadrazreda imenujemo **hierarhija dedovanja** _(ang. inheritance hierarchy)_. V njej poti od posameznega razreda do njegovih _prednikov_ rečemo **veriga dedovanja** _(ang. inheritance chain)_.
+
+```text
+                    +-------------+
+                    |             |
+                    |  Zaposleni  |
+                    |             |
+                    +------^------+
+                           |
+       +-------------------+-------------------+
+       |                   |                   |
++------+------+     +------+------+     +------+------+
+|             |     |             |     |             |
+|   Manager   |     |   Sekretar  |     |  Programer  |
+|             |     |             |     |             |
++------^------+     +-------------+     +-------------+
+       |
+       |
+       |
++------+------+
+|             |
+|    Vodja    |
+|             |
++-------------+
+```
+
+Od razreda _potomca_ do njegovega oddaljenega _prednika_ običajno obstaja več kot ena veriga. Iz zgornjega prikaza razberemo, da razreda `Sekretar` in `Programer` razširjata razred `Zaposleni`, vendar nimata povezave z razredom `Manager` in obratno. Tak način dedovanja se lahko nadaljuje dokler ne zadostimo smiselni celoti konteksta težave, ki jo rešujemo.
+
+### Polimorfizem _(ang. polymorphism)_
+
+Pravilo po katerem se ravnamo pri odločanju o uporabi tehnike dedovanja je pravilno oblikovanje in interpretacija podatkov, ki jih potrebujemo pri izvajanju programske logike. Relacija "je" zagotavlja, da je vsak objekt določenega podrazreda tudi objekt njegovega nadrazreda. V našem primeru bi lahko zapisali, da je vsak manager tudi zaposleni. Posledično je smiselno, da je razred `Manager` podrazred razreda `Zaposleni`. V obratnem primeru tega ne moremo vedno trditi, saj vsak zaposleni ni tudi manager.
+
+Drugačen način po katerem uvedemo relacijo "je", je **načelo zamenjave** _(ang. substitution principle)_. Omogoči nam, da kadar program pričakuje tip nadrazreda, namesto njega lahko uporabimo podrazred.
+
+```java
+Zaposleni zaposleni;
+zaposleni = new Zaposleni("Zaposleni 1", 987.65); // ustvarimo objekt pričakovanega nadrazreda
+zaposleni = new Manager("Manager 1", 1234.567); // ustvarimo objekt podrazreda - je povsem veljavno
+```
+
+V Javi so spremenljivke (oziroma polja) objektov polimorfične. V primeru lahko za spremenljivko `zaposleni` navedemo tako objekt nadrazreda `Zaposleni`, kot tudi objekt podrazreda `Manager` (oziroma kateregakoli drugega, ki v osnovi izhaja iz razreda `Zaposleni`).
+
+```java
+Manager manager;
+manager = new Manager("Manager 1", 1234.567); // pravilno, saj ustvarimo objekt pričakovanega podatkovnega tipa
+manager = new Zaposleni("Zaposleni 1", 987.65); // ni pravilno, saj razred Zaposleni nima ustreznih konstruktov, ki jih uvedemo z razredom Manager
+```
+
+Obraten zapis - za spremenljivko `manager` navedemo najprej objekt pričakovanega podatkovnega tipa `Manager`, potem pa ji želimo prirediti objekt razreda `Zaposleni` - ni veljaven, saj s podrazredom `Manager` uvedemo dodatne programske konstrukte, ki jih v razredu `Zaposleni` ni bilo. Posledično ne moremo pričakovati, da bo vedenje objekta razreda `Zaposleni` še vedno ustrezno tudi za njegov podrazred.
+
+Pri uporabi polimorfizma v povezavi s tabelami moramo izpostaviti primer, kjer je potrebna posebna pazljivost.
+
+```java
+Manager[] managerji = new Manager[5]; // pravilno
+Zaposleni[] zaposleni = managerji; // pravilno
+zaposleni[3] = new Zaposleni("Zaposleni 4", 876.5); // izjema pri prirejanju reference objekta, saj izvorni podatkovni tip ni razred Zaposleni
+```
+
+Na začetku ustvarimo tabelo razreda `Manager`, ki ji nastavimo poljubno velikost. Zatem se odločimo, da bomo tabeli spremenili podatkovni tip v nadrazred in tako nad elementi uporabljali le vedenje razreda `Zaposleni`. Do te točke je vse pravilno in veljavno, saj kot vemo je vsak podrazred tudi nadrazred in posledično smemo uporabiti tabelo podrazreda kot tabelo nadrazreda. Na težavo pa naletimo pri prirejanju objekta razreda `Zaposleni` na izbran element tabele. Kot vemo vse spremenljivke v Javi v resnici hranijo samo referenco na objekt, ki ga navedemo v času inicializacije. Pri prirejanju spremenljivke `zaposleni` z vrednostjo spremenljivke `managerji` (druga vrstica primera) torej prenesemo samo referenco objekta. Ko želimo v zadnji vrstici primera na tretji indeks tabele nastaviti referenco na objekt razreda `Zaposleni` pri izvajanju naletimo na izjemo. Razlog zanjo se skriva v podrobnostih - spremenljivka `zaposleni` hrani referenco na tabelo razreda `Manager`. Vsak `Zaposleni` ni nujno `Manager`, saj obratna relacija "je" ne obstaja. Posledično želimo preko reference na spremenljivki `zaposleni` na tabelo razreda `Manager` dodati instanco razreda `Zaposleni`, kar pa po opisanem ni mogoče. Za lažjo predstavo našo operacijo ponazorimo še brez vmesne spremembe podatkovnega tipa.
+
+```java
+Manager[] managerji = new Manager[5];
+managerji[3] = new Zaposleni("Zaposleni 4", 876.5); // ni pravilno, saj nadrazreda ne moremo uporabiti kot element podrazreda
+```
+
+V tem primeru na napako naletimo že pri prevajanju. Pri uporabi polimorfizma v povezavi s tabelami moramo biti torej pozorni kadar želimo spreminjati njene elemente, saj ni nujno, da je referenca na katero se sklicujemo istega podatkovnega tipa, kot navedeni podatkovni tip spremenljivke.
+
+### Razumevanje klicev metod
+
+V nadaljevanju bomo predstavili celoten potek klica metode na objektu. Za primer bomo izbrali objekt razreda `Razred`, ki ga bomo poimenovali `objekt`. `Razred` ima implementirano tudi metodo imenovano `metoda`, ki jo smemo klicati s parametri. Klic, ki ga bomo opravili zapišemo kot `objekt.metoda(argumenti)`. Potek klica si sledi ...
+
+1. Prevajalnik najprej preveri deklariran podatkovni tip objekta `objekt` in ime metode. Upoštevati je potrebno, da lahko obstaja več (preobloženih) metod z istim imenom `metoda`, vendar drugačnimi tipi parametrov. Za primer je deklaracija te metode lahko `metoda(int)` ali `metoda(String)`. Prevajalnik preveri vse metode imenovane `metoda` v razredu `Razred` ter poleg tega še vse metode `metoda` v morebitnih nadrazredih razreda `Razred` (z izjemo tistih, ki imajo nastavljeno zasebno stopnjo dostopa). S tem prevajalnik spozna vse možne kandidate za metodo, ki jo mora poklicati.
+
+2. Nadalje prevajalnik preveri tipe argumentov, ki so bili podani ob klicu metode. V kolikor med vsemi metodami imenovanimi `metoda` obstaja edinstvena metoda, katere tipi se ujemajo s parametri klica, jo izbere. Za primer klica `razred.metoda("Pozdravljeni")` prevajalnik izbere metodo `metoda(String)` in ne metoda `metoda(int)`. Če se navežemo na polimorfizem, pri podanih parametrih, ki ustrezajo tako podrazredu, kot nadrazredu, situacija postane težavnejša. V kolikor prevajalnik ne najde usterzne metode ali jih po spremembi tipov (npr. polimorfizem) obstaja več možnih, potem javi napako. S tem postopkom prevajalnik pozna tako ime, kot tudi tipe parametrov metode, ki jo mora klicati.
+
+3. V kolikor je v metodi uporabljena katera izmed ključnih besed `private`, `static`, `final` ali pa gre v resnici za konstruktor, potem prevajalnik točno ve, katero metodo mora poklicati. Temu pravimo **statično povezovanje** _(ang. static binding)_. V ostalih primerih se mora prevajalnik zanašati neposredno na podatkovni tip objekta `objekt` in uporabiti **dinamično povezovanje** v času izvajanja programa. Slednje drži tudi za našo metodo `metoda(String)`.
+
+4. Pri uporabi dinamičnega povezovanja mora navidezni stroj v času izvajanja programa klicati pravilno metodo z ustrezninm dejanskim tipom objekta, na katerega se `objekt` nanaša. Dejanski tip bi lahko bil razred `Podrazred`, ki predstavja podrazred razreda `Razred`. Če ima `Podrazred` definirano metodo `metoda(String)`, potem kliče to metodo. V kolikor to ne drži, navidezni stroj išče naprej v nadrazredu `Razred`. V primeru, da bi imel `Razred` svoj nadrazred, bi se to nadaljevalo še vse do glavnega razreda, ki ni razširjen iz kakšnega drugega.
+
+    Način iskanja metode za vsakokratni klic po dinamičnem povezovanju je po opisanem časovno potraten. V ta namen navidezni stroj že pred dejanskim izvajanjem programa ustvari tabelo metod _(ang. method table)_, ki vsebuje vse definicije in dejanske metode, ki jih je možno klicati. Ob klicu tako navidezni stroj le poišče metodo v tabeli metod in jo izvede. V našem primeru za `metoda(String)` je izvorni klic lahko `Podrazred.metoda(String)` ali `Razred.metoda(String)`, pri čemer moramo vedeti, da je v podrazredu možen tudi klic metode iz nadrazreda preko `super.metoda(parameter)`. V kolikor to drži, potem mora navidezni stroj uporabiti tabelo metod za nadrazred.
+
+Naredimo primer še na poljubnem objektu iz zgornjega primera razreda `Zaposleni`, ki smo mu implementirali metodo `getPlaca`. Preverimo potek klica slednje metode na poljubnem objektu tega tipa.
+
+- Metoda ne sprejme nobenih parametrov, zato ne potrebujemo skrbeti za preobložene metode.
+
+- Metoda ne vsebuje katere izmed ključnih besed `private`, `static`, `final`, kar pomeni, da je dinamično povezana.
+
+- Navidezni stroj pripravi tabelo metod za razreda `Zaposleni` in `Manager`. Tabela razreda `Zaposleni` prikaže, da je metoda poleg metode `getPlaca` definirana prav v njem:
+
+    `Zaposleni`:
+  - `getImePriimek()` -> `Zaposleni.getImePriimek()`
+  - `getPlaca()` -> `Zaposleni.getPlaca()`
+
+S tem se postopek iskanja metode zaključi - dodaten korak, ki sicer še sledi napisanemu bomo obrazložili kasneje v tem poglavju.
+
+Za razred `Manager` se tabela metod nekoliko razlikuje, saj je ena metoda prevzeta iz nadrazreda, ena je prepisana, še ena pa je dodana.
+
+`Manager`:
+
+- `getImePriimek()` -> `Zaposleni.getImePriimek()`
+
+- `getPlaca()` -> `Manager.getPlaca()`
+
+- `setBonus(double)` -> `Manager.setBonus(double)`
+
+V času izvajanja bi se klic metode `getPlaca` na poljubnem objektu enega izmed tipov `Zaposleni` ali `Manager` izvedel po naslednjem vrstnem redu:
+
+- Navidezni stroj najprej pridobi tabelo metod za dejanski tip objekta - `Zaposleni` ali `Manager` oz. katerikoli drug podrazred razreda `Zaposleni`.
+
+- Glede na definicijo metode `getPlaca` išče v dejanskem razredu objekta. Ko konča, pozna točno metodo, ki jo uporabi za klic.
+
+- Navidezni stroj pokliče metodo.
+
+Dinamično povezovanje ima zelo pomembno vlogo, saj omogoča, da programe razširimo brez potrebe po spreminjanju obstoječe kode. V kolikor bi dodali nov podrazred `Vodja`, ki razširja razred `Manager`, v obstoječi kodi pa se že navezujemo na katerega izmed njegovih nadrazredov, lahko brez spremembe uporabimo tudi objekte novega tipa namesto nadrazredov. Za primer klica metode `getPlaca` kje v obstoječi kodi, te ne potrebujemo spreminjati, saj vemo, da bo metoda definirana tudi v podrazredu `Vodja`. Tako lahko enostavno dopolnjujemo kodo programa in uvedemo nove podrazrede, ki bodo vedno kompatibilni s kodo njihovih nadrazredov.
