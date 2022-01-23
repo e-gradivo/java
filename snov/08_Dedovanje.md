@@ -200,6 +200,8 @@ S tem popravkom je koda postala delujoča in logično pravilna. Na podoben probl
 
 V podrazredu `Manager` smo napisali prepisano metodo, s katero spremenimo njeno delovanje za ta podrazred. Dodamo torej lahko dodatna polja in metode oziroma prepišemo obstoječe metode nadrazreda. Z dedovanjem pridobimo vse programske konstrukte nadrazreda, ki jih lahko dopolnimo, ne moremo pa jih odstraniti.
 
+Izpostavimo še, da mora stopnja dostopnosti prepisane metode ostati enaka ali dostopnejša. V kolikor je v nadrazredu označena kot zaščitena oziroma `protected`, mora ostati na tej stopnji ali pa jo smemo odpreti za širšo uporabo, kot javno oziroma `public`. V zasebno oziroma `private` je ne moremo spremeniti, saj bi tako preprečili dostop glede na definicijo metode v nadrazredu.
+
 ### Uporaba nadrazredov in podrazredov
 
 Po implementaciji logike v podrazred ustvarimo novo instanco in izpišemo skupno plačo, ki upošteva bonus.
@@ -359,3 +361,243 @@ V času izvajanja bi se klic metode `getPlaca` na poljubnem objektu enega izmed 
 - Navidezni stroj pokliče metodo.
 
 Dinamično povezovanje ima zelo pomembno vlogo, saj omogoča, da programe razširimo brez potrebe po spreminjanju obstoječe kode. V kolikor bi dodali nov podrazred `Vodja`, ki razširja razred `Manager`, v obstoječi kodi pa se že navezujemo na katerega izmed njegovih nadrazredov, lahko brez spremembe uporabimo tudi objekte novega tipa namesto nadrazredov. Za primer klica metode `getPlaca` kje v obstoječi kodi, te ne potrebujemo spreminjati, saj vemo, da bo metoda definirana tudi v podrazredu `Vodja`. Tako lahko enostavno dopolnjujemo kodo programa in uvedemo nove podrazrede, ki bodo vedno kompatibilni s kodo njihovih nadrazredov.
+
+### Končni razredi in metode
+
+Občasno se pri implementaciji funkcionalnosti pojavi potreba po preprečevanju razširjanja razredov ali prepisovanja metod. V ta namen obstaja ključna beseda `final`, ki jo uporabimo pri definiciji razreda ali metode. V našem primeru bi lahko ustvarili nov razred `Vodja`, ki razširja razred `Manager`, in mu določili, da je končen.
+
+```java
+package io.github.e_gradivo.dedovanje;
+
+public final class Vodja extends Manager {
+    public Vodja(String imePriimek, double placa) {
+        super(imePriimek, placa);
+    }
+}
+```
+
+Poskusimo ustvariti še podrazred `Nadvodja` razreda `Vodja` ...
+
+```java
+package io.github.e_gradivo.dedovanje;
+
+public class Nadvodja extends Vodja {
+    public Nadvodja(String imePriimek, double placa) {
+        super(imePriimek, placa);
+    }
+}
+```
+
+... in pri prevajanju naletimo na napako, ki nam pove, da je razred `Vodja` že končen.
+
+Podobno, kot za razrede lahko preprečimo prepisovanje metod. Z označevanjem, da je metoda končna je v vseh nadaljnjih podrazredih ne moremo prepisati. To samodejno velja tudi za vse metode končnega razreda.
+
+```java
+package io.github.e_gradivo.dedovanje;
+
+public class Zaposleni {
+    // ...
+
+    public final String getImePriimek() {
+        return imePriimek;
+    }
+
+    // ...
+}
+```
+
+Razlog za označevanje končne metode je jasen - v vseh nadaljnjih podrazredih želimo, da način njenega delovanja ostane predvidljiv oziroma nespremenjen.
+
+Spomnimo se, da smemo tudi polja označiti kot končna, kar pomeni, da jim po inicializaciji ne moremo več spremeniti vrednosti. Ko označimo razred kot končen, to vpliva le na metode (postanejo končne), ne pa tudi na polja.
+
+Dodaten primer končnega razreda je neprimitivni podatkovni tip `String`. Bistveno za določanje njegove končne definicije je referenciranje objekta. Ko ima določena spremenljivka nastavljen podatkovni tip razreda `String`, vedno vemo, da bo referenca objekta kazala na razred `String` in ne kakšnega izmed njegovih podrazredov.
+
+### Pretvorbe
+
+Proces vsiljenega pretvarjanja med dvemi podatkovnimi tipi imenujemo pretvorba _(ang. casting)_. Z njo lahko namenoma naredimo spremembo med kompatibilnimi podatkovnimi tipi. Zapis, ki ga uporabimo so oklepaji, v katerih navedemo pričakovan podatkovni tip ter ga postavimo pred spremenljivko ali vrednost drugega kompatibilnega podatkovnega tipa.
+
+```java
+double decimalno = 1234.567;
+int celo = (int) decimalno; // uporabimo pretvorbo iz decimalnega v celo število
+```
+
+Pretvorbo poleg dela s pritivnimi podatkovnimi tipi uporabljamo tudi pri objektih, kadar želimo spremeniti referenco iz enega razreda na drugega.
+
+```java
+Zaposleni[] zaposleni = new Zaposleni[] {
+        new Zaposleni("Zaposleni 1", 987.65),
+        new Zaposleni("Zaposleni 2", 876.5),
+        new Manager("Manager 1", 1234.567)
+};
+Manager manager = (Manager) zaposleni[2]; // veljavna pretvorba, saj referenca na podanem elementu ustreza razredu Manager
+```
+
+Razlog za pretvarjanje tipa objektov je uporaba polne funkcionalnosti razreda, katerega instanca v resnici ta objekt je. Iz primera vidimo, da smo v tabelo razreda `Zaposleni` podali dva objekta pričakovanega razreda ter en objekt podrazreda, ki prav tako ustreza navedenemu razredu. Ob sklicu na element v tabeli vedno dobimo objekt z referenco na razred, ki je podan kot podatkovni tip (v tem primeru je to `Zaposleni`). Posledično moramo za izrabo dodatnih funkcionalnosti, ki jih uvaja podrazred `Manager`, narediti pretvorbo v ta razred. V kolikor bi želeli to isto pretvorbo narediti na kakšnem drugem elementu tabele, bi se pojavila napaka, saj je njuna prvotna referenca na objekt podana z razredom `Zaposleni`.
+
+V izogib napačni pretvorbi nad drugimi referencami na objekt, ki so na primer razreda `Zaposleni`, za preverjanje uporabimo operator `instanceof`. Omogoča nam, da pred dejansko pretvorbo uporabimo pogojni stavek, v katerem se prepričamo, da je prvotna referenca objekta podanega razreda.
+
+```java
+Manager manager = new Manager("Manager 1", 1234.567);
+manager.setBonus(987.65);
+
+Zaposleni[] zaposleni = new Zaposleni[] {
+        new Zaposleni("Zaposleni 1", 987.65),
+        new Zaposleni("Zaposleni 2", 876.5),
+        manager
+};
+
+for (Zaposleni zap : zaposleni) {
+    if (zap instanceof Manager) {
+        Manager man = (Manager) zap;
+        System.out.println(man.getImePriimek() + " je manager s plačo: " + man.getPlaca());
+    } else {
+        System.out.println(zap.getImePriimek() + " je zaposleni s plačo: " + zap.getPlaca());
+    }
+}
+```
+
+Pretvorbe nad razredi so dovoljene samo znotraj hierarhije dedovanja. Operator `instanceof` lahko uporabimo tudi v povezavi z `null`, saj je privzeta vrednost objekta na spremenljivki oziroma polju prazna. To pomeni, da nima nastavljene reference na objekt pričakovanega podatkovnega tipa.
+
+```java
+Zaposleni[] zaposleni = new Zaposleni[] {
+        null,
+        null,
+        new Manager("Manager 1", 1234.567),
+};
+for (Zaposleni zap : zaposleni) {
+    if (zap instanceof Manager) {
+        System.out.println(zap.getImePriimek() + " je manager.");
+    }
+}
+```
+
+Uporaba pretvorb ni najbolj zaželena, saj hitro pride do napak pri pisanju kode in posledično izvajanju programa. Iz primera razredov `Zaposleni` in `Manager` ter zgoraj podanih primerov s tabelo in zanko, vidimo, da je pravzaprav funkcionalnost, ki jo uporabljamo v večini že implementirana v nadrazredu `Zaposleni`. Posledično pretvorba pride prav le kadar želimo uporabiti specifično metodo, kot je `setBonus` na razredu `Manager`. V kolikor bi želeli uporabljati metodo `setBonus` tudi na nadrazredu `Zaposleni`, se moramo vprašati ali je oblikovno naša koda zares smiselna in jo temu primerno tudi popraviti.
+
+Pri programiranju moramo stremeti k temu, da pretvorbe in preverjanje s pomočjo operatorja `instanceof` uporabimo čim manjkrat. V kodo namreč dodajo dodatno kompleksnost, ki hitro privede do napak.
+
+### Abstraktni razredi in metode
+
+Ko se po lestvici hierarhije dedovanja premikamo navzgor, razredi postajajo vse splošnejši in bolj abstraktni - so po funkcionalnosti vedno bolj omejeni in vključujejo le najosnovnejše dele. Na neki točki tako lahko namesto njihove usmeritve v reševanje točno določenega problema pomislimo, da tvori osnovo tudi za nek drug podoben problem. V našem primeru razreda `Zaposleni` lahko nadalje izločimo podatke in funkcionalnost, ki je vezana na abstraknejšo entiteto. Zanjo ustvarimo dodaten razred `Oseba`, v enakovreden položaj razredu `Zaposleni` pa lahko ustvarimo razred `Student`. Oba razreda predstavimo kot podrazreda vrhnjega razreda `Oseba`.
+
+```text
+           +-------------+
+           |             |
+           |    Oseba    |
+           |             |
+           +------^------+
+                  |
+       +----------+----------+
+       |                     |
++------+------+       +------+------+
+|             |       |             |
+|  Zaposleni  |       |   Student   |
+|             |       |             |
++-------------+       +-------------+
+```
+
+Razlog za abstrahiranje v tem primeru najdemo pri atributih, saj ima vsaka oseba podatek, kot sta ime in priimek. Ne glede na končni razred, naj bo to `Zaposleni` ali `Student`, vemo, da bomo za njuno identifikacijo potrebovali takšen podatek. Posledično je smiselno, da izvzamemo skupne podatke iz obeh in jih združimo v skupni nadrazred, na vrh hierarhije dedovanja. Poleg imena in priimka dodajmo še metodo `getOpis`, ki bo vračal kratek opis posamezne osebe, glede na tip razreda končnega objekta. V podrazredih implementacija ne bi smela predstavljati težave, medtem ko z nadrazredom `Oseba` brez konteksta v katerem je le-ta predstavljena, ne moremo enostavno dodati opisa.
+
+V izogib implementaciji uvedemo novo ključno besedo `abstract`, ki jo uporabimo tako pri definiciji razreda `Person`, kot tudi metode `getOpis`.
+
+```java
+package io.github.e_gradivo.dedovanje;
+
+public abstract class Oseba {
+    private String imePriimek;
+
+    public Oseba(String imePriimek) {
+        this.imePriimek = imePriimek;
+    }
+
+    public String getImePriimek() {
+        return imePriimek;
+    }
+
+    public abstract String getOpis(); // ne potrebujemo implementirati metode
+}
+```
+
+Kadar želimo imeti vsaj eno izmed metod razreda abstraktno, mora biti abstrakten tudi razred. Kot je prikazano v primeru, sme imeti takšen razred podana tudi polja in druge metode, ki so implementirane. Za označevanje razreda s ključno besedo `abstract` ni nobenega pogoja o vsebovanosti abstraktnih metod, temveč lahko razred kot tak označimo kot abstrakten. To je smiselno, kadar v programu ne želimo imeti instanc tega razreda, temveč razrede s specifično implementacijo in vedenjem. Ustvarjanje objektov abstraktnih razredov namreč ni dovoljeno.
+
+Abstraktne metode služijo namenu prihodnje implementacije - ob ustvarjanju podrazreda, ki razširja abstraktni razred, moramo obvezno implementirati te metode. Za primer lahko vzamemo podrazred `Student` in upoštevamo zahtevano implementacijo.
+
+```java
+package io.github.e_gradivo.dedovanje;
+
+public class Student extends Oseba {
+    private String smerStudija;
+
+    public Student(String imePriimek, String smerStudija) {
+        super(imePriimek);
+        this.smerStudija = smerStudija;
+    }
+
+    public String getSmerStudija() {
+        return this.smerStudija;
+    }
+
+    public String getOpis() {
+        return String.format(
+            "%s je študent smeri %s.",
+            this.getImePriimek(),
+            this.getSmerStudija()
+        );
+    }
+}
+```
+
+V kodi, kjer se navezujemo na objekt razreda `Oseba` za razliko od instanciiranja, še vedno lahko neposredno uporabljamo ta razred. Pri tem so nam za klic na voljo vse metode, ki so definirane s tem razredom, ne glede na njihovo dejansko implementacijo ali abstraktno definicijo.
+
+```java
+Oseba student = new Student("Jaz Študent", "računalništvo in informatika");
+System.out.println(student.getOpis()); // izpiše opis po dejanski implementaciji v razredu Student
+```
+
+Za dokončanje našega primera dopolnimo še razred `Zaposleni`, da bomo imeli zgoraj prikazano hierarhijo dedovanja v celoti implementirano v kodi.
+
+```java
+package io.github.e_gradivo.dedovanje;
+
+public class Zaposleni extends Oseba {
+    private double placa;
+
+    public Zaposleni(String imePriimek, double placa) {
+        super(imePriimek);
+        this.placa = placa;
+    }
+
+    public double getPlaca() {
+        return placa;
+    }
+
+    public String getOpis() {
+        return String.format(
+            "%s je zaposleni s plačo %f.",
+            this.getImePriimek(),
+            this.getPlaca()
+        );
+    }
+}
+```
+
+Uporabimo oba podrazreda še v povezavi s tabelami.
+
+```java
+Oseba[] osebe = new Oseba[] {
+        new Student("Študent 1", "računalništvo in informatika"),
+        new Zaposleni("Zaposleni 1", 1234.567),
+};
+for (Oseba oseba : osebe) {
+    System.out.println(oseba.getOpis());
+}
+```
+
+Izpostavimo še, da pri klicu `oseba.getOpis()` v zgornjem primeru ne more priti do napake zaradi morebitne neobstoječe implementacije metode (v razredu `Oseba` smo jo označili kot abstraktno). Kadar razširimo kodo abstraktnega razreda, prevajalnik vedno poskrbi za preverjanje obstoja implementacije metod. V nasprotnem primeru se podrazred ne prevede in s tem tudi ne moremo pognati našega programa.
+
+Abstraktni razredi in metode so pomemben koncept v Javi. Z njimi se bomo še dodatno ukvarjali v kasnejšem poglavju.
+
+### Zaščiten dostop
+
+Polja v razredih običajno označimo kot zasebna, metode pa največkrat kot javne. Kot vemo do konstruktov z zasebno stopnjo dostopa izven razreda, kjer jih uvedemo, ne moremo dostopati. Seveda to velja tudi za podrazrede, čeprav mnogokrat ravno iz tam želimo dostopati do njih. Kot rešitev bi lahko uporabili zaščiteno stopnjo dostopa oz. `protected`, kar bi omogočilo neposreden dostop do izbranega konstrukta. Čeprav je to povsem veljavno, moramo vedeti, da `protected` omeji dostop do gradnika na celoten paket v katerem se ta nahaja in ne le na razred ali njegove podrazrede. Uporaba te stopnje dostopa je smiselna kadar je naša koda oblikovana na način, da morebitna uporaba te kode v drugih delih paketa ne more vplivati na nadaljnje spreminjanje naše kode. V kolikor označimo polja kot `protected`, se moramo prav tako zavedati, da v času uporabe razreda, kjer so ta definirana lahko to privede do nepričakovanih operacij oziroma rezultatov tudi znotraj logike razreda.
+
+Uporaba ustreznih stopenj dostopa je torej prepuščena implementatorju kode glede na kontekst in problem, ki ga s programom rešuje. Temu ustrezno je treba uporabiti stopnje dostopa ter premisliti kaj lahko prevelika odprtost v smislu dostopnosti prinese v prihodnje, če bi želeli spremeniti ali dopolniti obstoječo kodo.
