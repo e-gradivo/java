@@ -218,7 +218,7 @@ class Narocilo {
 
 Metode, ki vračajo vrednost morajo imeti podan specifičen podatkoven tip, v katerem bo vrnjena končna vrednost. Za vračanje moramo uporabiti ključno besedo `return`, za njo pa zapišemo dejansko vrednost ali spremenljivko ali polje, ki je rezultat klica metode. Pri tovrstnih metodah je vračanje podatka obvezno, saj sicer ne moremo prevesti kode.
 
-Pri metodah, ki se le izvedejo namesto podatkovnega tipa uporabimo ključno besedo `void`. Označuje, da metoda ne vrne podatka. V tovrstnih metodah ne moremo vračati vrednosti oziroma uporaba ključne besede `return` v njih ni dovoljena.
+Pri metodah, ki se le izvedejo namesto podatkovnega tipa uporabimo ključno besedo `void`. Označuje, da metoda ne vrne podatka. V tovrstnih metodah ne moremo vračati vrednosti oziroma uporaba ključne besede `return` skupaj z vrednostjo v njih ni dovoljena.
 
 Sprejem dodatnih podatkov v metodo opravimo s pomočjo parametrov. Definiramo jih v poljubnem zaporedju, njihov zapis pa sestoji iz podatkovnega tipa in imena.
 
