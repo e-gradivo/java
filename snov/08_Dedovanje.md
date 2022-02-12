@@ -320,13 +320,13 @@ V nadaljevanju bomo predstavili celoten potek klica metode na objektu. Za primer
 
 1. Prevajalnik najprej preveri deklariran podatkovni tip objekta `objekt` in ime metode. Upoštevati je potrebno, da lahko obstaja več (preobloženih) metod z istim imenom `metoda`, vendar drugačnimi tipi parametrov. Za primer je deklaracija te metode lahko `metoda(int)` ali `metoda(String)`. Prevajalnik preveri vse metode imenovane `metoda` v razredu `Razred` ter poleg tega še vse metode `metoda` v morebitnih nadrazredih razreda `Razred` (z izjemo tistih, ki imajo nastavljeno zasebno stopnjo dostopa). S tem prevajalnik spozna vse možne kandidate za metodo, ki jo mora poklicati.
 
-2. Nadalje prevajalnik preveri tipe argumentov, ki so bili podani ob klicu metode. V kolikor med vsemi metodami imenovanimi `metoda` obstaja edinstvena metoda, katere tipi se ujemajo s parametri klica, jo izbere. Za primer klica `razred.metoda("Pozdravljeni")` prevajalnik izbere metodo `metoda(String)` in ne metoda `metoda(int)`. Če se navežemo na polimorfizem, pri podanih parametrih, ki ustrezajo tako podrazredu, kot nadrazredu, situacija postane težavnejša. V kolikor prevajalnik ne najde usterzne metode ali jih po spremembi tipov (npr. polimorfizem) obstaja več možnih, potem javi napako. S tem postopkom prevajalnik pozna tako ime, kot tudi tipe parametrov metode, ki jo mora klicati.
+2. Nadalje prevajalnik preveri tipe argumentov, ki so bili podani ob klicu metode. V kolikor med vsemi metodami imenovanimi `metoda` obstaja edinstvena metoda, katere tipi se ujemajo s parametri klica, jo izbere. Za primer klica `razred.metoda("Pozdravljeni")` prevajalnik izbere metodo `metoda(String)` in ne metode `metoda(int)`. Če se navežemo na polimorfizem, pri podanih parametrih, ki ustrezajo tako podrazredu, kot nadrazredu, situacija postane težavnejša. V kolikor prevajalnik ne najde ustrezne metode ali jih po spremembi tipov (npr. polimorfizem) obstaja več možnih, potem javi napako. S tem postopkom prevajalnik pozna tako ime, kot tudi tipe parametrov metode, ki jo mora klicati.
 
 3. V kolikor je v metodi uporabljena katera izmed ključnih besed `private`, `static`, `final` ali pa gre v resnici za konstruktor, potem prevajalnik točno ve, katero metodo mora poklicati. Temu pravimo **statično povezovanje** _(ang. static binding)_. V ostalih primerih se mora prevajalnik zanašati neposredno na podatkovni tip objekta `objekt` in uporabiti **dinamično povezovanje** v času izvajanja programa. Slednje drži tudi za našo metodo `metoda(String)`.
 
-4. Pri uporabi dinamičnega povezovanja mora navidezni stroj v času izvajanja programa klicati pravilno metodo z ustrezninm dejanskim tipom objekta, na katerega se `objekt` nanaša. Dejanski tip bi lahko bil razred `Podrazred`, ki predstavja podrazred razreda `Razred`. Če ima `Podrazred` definirano metodo `metoda(String)`, potem kliče to metodo. V kolikor to ne drži, navidezni stroj išče naprej v nadrazredu `Razred`. V primeru, da bi imel `Razred` svoj nadrazred, bi se to nadaljevalo še vse do glavnega razreda, ki ni razširjen iz kakšnega drugega.
+4. Pri uporabi dinamičnega povezovanja mora navidezni stroj v času izvajanja programa klicati pravilno metodo z ustreznim dejanskim tipom objekta, na katerega se `objekt` nanaša. Dejanski tip bi lahko bil razred `Podrazred`, ki predstavja podrazred razreda `Razred`. Če ima `Podrazred` definirano metodo `metoda(String)`, potem kliče to metodo. V kolikor to ne drži, navidezni stroj išče naprej v nadrazredu `Razred`. V primeru, da bi imel `Razred` svoj nadrazred, bi se to nadaljevalo še vse do glavnega razreda, ki ni razširjen iz kakšnega drugega.
 
-    Način iskanja metode za vsakokratni klic po dinamičnem povezovanju je po opisanem časovno potraten. V ta namen navidezni stroj že pred dejanskim izvajanjem programa ustvari tabelo metod _(ang. method table)_, ki vsebuje vse definicije in dejanske metode, ki jih je možno klicati. Ob klicu tako navidezni stroj le poišče metodo v tabeli metod in jo izvede. V našem primeru za `metoda(String)` je izvorni klic lahko `Podrazred.metoda(String)` ali `Razred.metoda(String)`, pri čemer moramo vedeti, da je v podrazredu možen tudi klic metode iz nadrazreda preko `super.metoda(parameter)`. V kolikor to drži, potem mora navidezni stroj uporabiti tabelo metod za nadrazred.
+    Način iskanja metode za vsakokratni klic po dinamičnem povezovanju je po opisanem časovno potraten. V ta namen navidezni stroj že pred dejanskim izvajanjem programa ustvari **tabelo metod** _(ang. method table)_, ki vsebuje vse definicije in dejanske metode, ki jih je možno klicati. Ob klicu tako navidezni stroj le poišče metodo v tabeli metod in jo izvede. V našem primeru za `metoda(String)` je izvorni klic lahko `Podrazred.metoda(String)` ali `Razred.metoda(String)`, pri čemer moramo vedeti, da je v podrazredu možen tudi klic metode iz nadrazreda preko `super.metoda(parameter)`. V kolikor to drži, potem mora navidezni stroj uporabiti tabelo metod za nadrazred.
 
 Naredimo primer še na poljubnem objektu iz zgornjega primera razreda `Zaposleni`, ki smo mu implementirali metodo `getPlaca`. Preverimo potek klica slednje metode na poljubnem objektu tega tipa.
 
@@ -334,7 +334,7 @@ Naredimo primer še na poljubnem objektu iz zgornjega primera razreda `Zaposleni
 
 - Metoda ne vsebuje katere izmed ključnih besed `private`, `static`, `final`, kar pomeni, da je dinamično povezana.
 
-- Navidezni stroj pripravi tabelo metod za razreda `Zaposleni` in `Manager`. Tabela razreda `Zaposleni` prikaže, da je metoda poleg metode `getPlaca` definirana prav v njem:
+- Navidezni stroj pripravi tabelo metod za razreda `Zaposleni` in `Manager`. Tabela razreda `Zaposleni` prikaže, da je metoda `getPlaca` poleg metode `getImePriimek` definirana prav v njem:
 
     `Zaposleni`:
   - `getImePriimek()` -> `Zaposleni.getImePriimek()`
@@ -497,7 +497,7 @@ Ko se po lestvici hierarhije dedovanja premikamo navzgor, razredi postajajo vse 
 
 Razlog za abstrahiranje v tem primeru najdemo pri atributih, saj ima vsaka oseba podatek, kot sta ime in priimek. Ne glede na končni razred, naj bo to `Zaposleni` ali `Student`, vemo, da bomo za njuno identifikacijo potrebovali takšen podatek. Posledično je smiselno, da izvzamemo skupne podatke iz obeh in jih združimo v skupni nadrazred, na vrh hierarhije dedovanja. Poleg imena in priimka dodajmo še metodo `getOpis`, ki bo vračal kratek opis posamezne osebe, glede na tip razreda končnega objekta. V podrazredih implementacija ne bi smela predstavljati težave, medtem ko z nadrazredom `Oseba` brez konteksta v katerem je le-ta predstavljena, ne moremo enostavno dodati opisa.
 
-V izogib implementaciji uvedemo novo ključno besedo `abstract`, ki jo uporabimo tako pri definiciji razreda `Person`, kot tudi metode `getOpis`.
+V izogib implementaciji uvedemo novo ključno besedo `abstract`, ki jo uporabimo tako pri definiciji razreda `Oseba`, kot tudi metode `getOpis`.
 
 ```java
 package io.github.e_gradivo.dedovanje;
@@ -546,7 +546,7 @@ public class Student extends Oseba {
 }
 ```
 
-V kodi, kjer se navezujemo na objekt razreda `Oseba` za razliko od instanciiranja, še vedno lahko neposredno uporabljamo ta razred. Pri tem so nam za klic na voljo vse metode, ki so definirane s tem razredom, ne glede na njihovo dejansko implementacijo ali abstraktno definicijo.
+V kodi, kjer se navezujemo na objekt razreda `Oseba`, za razliko od instanciiranja še vedno lahko neposredno uporabljamo ta razred. Pri tem so nam za klic na voljo vse metode, ki so definirane s tem razredom, ne glede na njihovo dejansko implementacijo ali abstraktno definicijo.
 
 ```java
 Oseba student = new Student("Jaz Študent", "računalništvo in informatika");
