@@ -132,11 +132,11 @@ Povzetek polj in metod za razred `Manager`:
 - `public double getPlaca()` (dedovano iz nadrazreda `Zaposleni`)
 - `public void setBonus(double bonus)`
 
-V podrazredu torej na nek način označujemo samo spremembe od nadrazreda, ki ga razširjamo. Upoštevati moramo, da je v nadrazred vključena le splošna logika, ki je skupna vsem nadaljnjim podrazredom. Specifične funkcionalnosti, ki so namenjene le točno določenemu delu našega programa torej uvrstimo v podrazred. S tem omogočimo vzpostavitev hierarhije za logične dele programa in se v primeru kasnejših potreb po dopolnitvi programske logike navežemo na tistega, ki ji najbolj ustreza. V naprej pa mnogokrat ne moremo predvideti možnih razširitev programa, zato je v okviru objektnega programiranja ustaljena praksa izločanja skupne kode v lastni razred in prestrukturiranja logike. To opravimo, ko je problem programa natančneje definiran in s tem kodo oblikujemo v bolj smiselno celoto. Pri tem eno ključih vlog igra prav koncept dedovanja.
+V podrazredu torej na nek način označujemo samo spremembe od nadrazreda, ki ga razširjamo. Upoštevati moramo, da je v nadrazred vključena le splošna logika, ki je skupna vsem nadaljnjim podrazredom. Specifične funkcionalnosti, ki so namenjene le točno določenemu delu našega programa torej uvrstimo v podrazred. S tem omogočimo vzpostavitev hierarhije za logične dele programa in se v primeru kasnejših potreb po dopolnitvi programske logike navežemo na tistega, ki ji najbolj ustreza. V naprej pa mnogokrat ne moremo predvideti možnih razširitev programa, zato je v okviru objektnega programiranja ustaljena praksa izločanja skupne kode v lastni razred in prestrukturiranja logike. To opravimo, ko je problem programa natančneje definiran in s tem kodo oblikujemo v bolj smiselno celoto. Pri tem eno ključnih vlog igra prav koncept dedovanja.
 
 ### Prepisovanje metod
 
-Kadar želimo spremeniti logiko določene metode v podrazredu, jo moramo prepisati. V primeru razreda `Manager` je takšna metoda `getPlaca`, saj po razširanju nadrazreda vključuje le osnovno logiko vračanja plače, brez upoštevanja bonusa. Prepisovanje metode opravimo tako, da njeno definicijo v celoti prepišemo, kot je v nadrazredu, nato pa v blok zapišemo podrazredu lastno logiko.
+Kadar želimo spremeniti logiko določene metode v podrazredu, jo moramo prepisati. V primeru razreda `Manager` je takšna metoda `getPlaca`, saj po razširjanju nadrazreda vključuje le osnovno logiko vračanja plače, brez upoštevanja bonusa. Prepisovanje metode opravimo tako, da njeno definicijo v celoti prepišemo, kot je v nadrazredu, nato pa v blok zapišemo podrazredu lastno logiko.
 
 ```java
 package io.github.e_gradivo.dedovanje;
