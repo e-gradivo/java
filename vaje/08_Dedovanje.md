@@ -7,7 +7,7 @@ Napišite razreda, ki predstavljata lik oziroma geometrijsko telo z naslednjim v
 - Krog: `Krog(double polmer)`, `getPolmer`, `getObseg`, `getPloscina`, `toString` (vrne niz v obliki `Krog s polmerom: [polmer]`, pri čemer `[polmer]` zamenjate z dejansko vrednostjo polja `polmer` in dodate poljubno mersko enoto)
 - Valj: `Valj(double visina, double polmer)`, `getVisina`, `getProstornina`, `getPovrsina`, `toString` (vrne niz v obliki `Valj z višino [visina] in polmerom [polmer].`, pri čemer `[visina]` in `[polmer]` zamenjate s pripadajočo vrednostjo istoimenskega polja in dodate poljubno mersko enoto)
 
-Upoštevajte koncept dedovanja in ustrezno razširite ustrezen razred. V paketu nato ustvarite vstopno točko in na primeru uporabite oba ustvarjena razreda.
+Upoštevajte koncept dedovanja in ustrezno razširite izbran razred. V paketu nato ustvarite vstopno točko in na primeru uporabite oba ustvarjena razreda.
 
 ## Naloga 2 (nadrazredi, podrazredi)
 
