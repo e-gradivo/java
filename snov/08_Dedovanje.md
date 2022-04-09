@@ -477,7 +477,7 @@ Pri programiranju moramo stremeti k temu, da pretvorbe in preverjanje s pomočjo
 
 ### Abstraktni razredi in metode
 
-Ko se po lestvici hierarhije dedovanja premikamo navzgor, razredi postajajo vse splošnejši in bolj abstraktni - so po funkcionalnosti vedno bolj omejeni in vključujejo le najosnovnejše dele. Na neki točki tako lahko namesto njihove usmeritve v reševanje točno določenega problema pomislimo, da tvori osnovo tudi za nek drug podoben problem. V našem primeru razreda `Zaposleni` lahko nadalje izločimo podatke in funkcionalnost, ki je vezana na abstraknejšo entiteto. Zanjo ustvarimo dodaten razred `Oseba`, v enakovreden položaj razredu `Zaposleni` pa lahko ustvarimo razred `Student`. Oba razreda predstavimo kot podrazreda vrhnjega razreda `Oseba`.
+Ko se po lestvici hierarhije dedovanja premikamo navzgor, razredi postajajo vse splošnejši in bolj abstraktni - so po funkcionalnosti vedno bolj omejeni in vključujejo le najosnovnejše dele. Na neki točki tako lahko namesto njihove usmeritve v reševanje točno določenega problema pomislimo, da tvorijo osnovo tudi za nek drug podoben problem. V našem primeru razreda `Zaposleni` lahko nadalje izločimo podatke in funkcionalnost, ki je vezana na abstraktnejšo entiteto. Zanjo ustvarimo dodaten razred `Oseba`, v enakovreden položaj razredu `Zaposleni` pa lahko ustvarimo razred `Student`. Oba razreda predstavimo kot podrazreda vrhnjega razreda `Oseba`.
 
 ```text
            +-------------+
