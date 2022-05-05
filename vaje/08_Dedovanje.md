@@ -9,6 +9,94 @@ Napišite razreda, ki predstavljata lik oziroma geometrijsko telo z naslednjim v
 
 Upoštevajte koncept dedovanja in ustrezno razširite izbran razred. V paketu nato ustvarite vstopno točko in na primeru uporabite oba ustvarjena razreda.
 
+Rešitev:
+
+<details>
+<summary>Krog.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga1;
+
+public class Krog {
+    private double polmer;
+
+    public Krog(double polmer) {
+        this.polmer = polmer;
+    }
+
+    public double getPolmer() {
+        return polmer;
+    }
+
+    public double getObseg() {
+        return polmer * 2 * Math.PI;
+    }
+
+    public double getPloscina() {
+        return Math.pow(polmer, 2) * Math.PI;
+    }
+
+    public String toString() {
+        return String.format("Krog s polmerom: %f", polmer);
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Valj.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga1;
+
+public class Valj extends Krog {
+    private double visina;
+
+    public Valj(double visina, double polmer) {
+        super(polmer);
+        this.visina = visina;
+    }
+
+    public double getVisina() {
+        return visina;
+    }
+
+    public double getProstornina() {
+        return visina * Math.pow(getPolmer(), 2) * Math.PI;
+    }
+
+    public double getPovrsina() {
+        return 2 * Math.pow(getPolmer(), 2) * Math.PI + visina * 2 * Math.PI * getPolmer();
+    }
+
+    public String toString() {
+        return String.format("Valj z visino %f in polmerom %f", visina, getPolmer());
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Vstopni.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga1;
+
+class Vstopni {
+    public static void main(String[] args) {
+        Krog krog = new Krog(4.5);
+        Valj valj = new Valj(12.67, 4.5);
+
+        System.out.println(krog.toString());
+        System.out.println(valj.toString());
+    }
+}
+```
+
+</details>
+
 ## Naloga 2 (nadrazredi, podrazredi)
 
 Ustvarite programska gradnika za predstavitev točk v dvodimenzionalnem in trodimenzionalnem kartezičnem koordinatnem sistemu, pri čemer drugi nadgrajuje funkcionalnost prvega. Razreda poimenujte `Tocka2D` in `Tocka3D`. Oba naj imata implementiran prazen konstruktor in konstruktor z vsemi podatki, ki definirajo točko ter pripadajoče nastavljalce in pridobivalce. Poleg tega naj ob klicu metode `toString` vračata predstavitev razdalj do točke po posamezni osi v oklepajih.
@@ -16,6 +104,88 @@ Ustvarite programska gradnika za predstavitev točk v dvodimenzionalnem in trodi
 Program nadgradite z dodatnima razredoma, ki vključujeta tabelo za pripadajočo dimenzijo točke in ju poimenujte `Koordinate2D` in `Koordinate3D`. Namenjena naj bosta kot osnova za lik `Kvadrat` in geometrijsko telo `Kocka`. Napišite konstruktor, ki na vhodu sprejme objekt pripadajočih koordinat, pri čemer predpostavite, da so podani podatki pravilni. Za kvadrat implementirajte metode `getStranica`, `getObseg` in `getPloscina`, za kocko pa `getRob`, `getProstornina` in `getPovrsina`.
 
 V paketu ustvarite vstopno točko in na primeru uporabite vse ustvarjene razrede.
+
+Rešitev:
+
+<details>
+<summary>Tocka2D.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga2;
+
+public class Tocka2D {
+    private int x;
+    private int y;
+
+    public Tocka2D(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public String toString() {
+        return String.format("x: %d, y: %d", x, y);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Tocka3D.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga2;
+
+public class Tocka3D extends Tocka2D {
+    private int z;
+
+    public Tocka3D(int x, int y, int z) {
+        super(x, y);
+        this.z = z;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public String toString() {
+        return String.format("x: %d, y: %d, z: %d", getX(), getY(), getZ());
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Vstopni.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga2;
+
+public class Vstopni {
+    public static void main(String[] args) {
+        int x = 2;
+        int y = 2;
+        int z = 2;
+
+        Tocka2D tocka = new Tocka2D(x, y);
+        System.out.println(tocka.toString());
+
+        Tocka3D tockadve = new Tocka3D(x, y, z);
+        System.out.println(tockadve.toString());
+    }
+}
+```
+
+</details>
 
 ## Naloga 3 (prepisovanje metod)
 
@@ -28,6 +198,146 @@ Napišite programske gradnike za namen uporabe koncepta dedovanja v kontekstu ce
 Ustvarite pripadajoče razrede in v konstruktorju pridobite datum začetka veljavnosti vinjete. Implementirajte metode `getNaziv`, `getZacetekVeljavnosti`, `getTrajanjeDni`, `getCena` in `toString` (vrača opis v obliki `[naziv], začetek veljavnosti [datum], trajanje: [trajanje dni] dni, cena: [cena] enot`, pri čemer podatke v oglatih oklepajih zamenjajte s klici pripadajočih metod). Pri obeh nadaljnjih razredih glede na časovno obdobje razširite predhodnega.
 
 V paketu ustvarite vstopno točko in uporabite vse ustvarjene razrede.
+
+Rešitev:
+
+<details>
+<summary>Vinjeta.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga3;
+
+public class Vinjeta {
+    private String naziv;
+    private String zacetekVeljavnosti;
+    private int trajanje;
+
+    public Vinjeta(String naziv, String zacetekVeljavnosti, int trajanje) {
+        this.naziv = naziv;
+        this.zacetekVeljavnosti = zacetekVeljavnosti;
+        this.trajanje = trajanje;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public String getZacetekVeljavnosti() {
+        return zacetekVeljavnosti;
+    }
+
+    public int getTrajanjeDni() {
+        return trajanje;
+    }
+
+    public double getCena() {
+        return -1;
+    }
+
+    public String toString() {
+        return String.format(
+                "%s, zacetek veljavnosti %s, trajanje: %d dni, %f enot",
+                naziv,
+                zacetekVeljavnosti,
+                trajanje,
+                getCena());
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Tedenska.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga3;
+
+public class Tedenska extends Vinjeta {
+    public Tedenska(String zacetekVeljavnosti) {
+        super("Tedenska", zacetekVeljavnosti, 7);
+    }
+
+    protected Tedenska(String naziv, String zacetekVeljavnosti, int trajanje) {
+        super(naziv, zacetekVeljavnosti, trajanje);
+    }
+
+    public double getCena() {
+        return 20;
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Mesecna.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga3;
+
+public class Mesecna extends Tedenska {
+    public Mesecna(String zacetekVeljavnosti) {
+        super("Mesecna", zacetekVeljavnosti, 28);
+    }
+
+    protected Mesecna(String naziv, String zacetekVeljavnosti, int trajanje) {
+        super(naziv, zacetekVeljavnosti, trajanje);
+    }
+
+    public double getCena() {
+        return super.getCena() * 4;
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Letna.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga3;
+
+public class Letna extends Mesecna {
+    public Letna(String zacetekVeljavnosti) {
+        super("Letna", zacetekVeljavnosti, 336);
+    }
+
+    protected Letna(String naziv, String zacetekVeljavnosti, int trajanje) {
+        super(naziv, zacetekVeljavnosti, trajanje);
+    }
+
+    public double getCena() {
+        double cena1 = super.getCena() * 12;
+        return cena1 - 0.2 * cena1;
+    }
+}
+```
+
+</details>
+
+<details>
+<summary>Vstopni.java</summary>
+
+```java
+package io.github.e_gradivo.dedovanje.naloga3;
+
+class Vstopni {
+    public static void main(String[] args) {
+        Tedenska tedenska = new Tedenska("25.3.2022");
+        Mesecna mesecna = new Mesecna("25.3.2022");
+        Letna letna = new Letna("25.3.2022");
+
+        System.out.println(tedenska.toString());
+        System.out.println(mesecna.toString());
+        System.out.println(letna.toString());
+
+    }
+}
+```
+
+</details>
 
 ## Naloga 4 (polimorfizem)
 
