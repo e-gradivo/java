@@ -84,7 +84,7 @@ Ko zadostimo lastnostim algoritmov, se vprašamo kaj še lahko izboljšamo v nav
 - naravni jezik - algoritem je izražen z besedami.
 - grafično z diagramom poteka *(ang. flowchart)* - algoritem je predstavljen v obliki diagrama s simboli, povezanimi s puščicami v smeri poteka.
 - psevdokoda - algoritem je predstavljen kot množica instrukcij, zapisanih v mešanici naravnega jezika in matematične notacije, ki so podobne tistim iz programskih jezikov.
-- koda v izbranem programskem jeziku - algoritem je sestavljen iz instrukcij, ki so predpisane v dokumentaciji programskega jezika.
+- koda v izbranem programskem jeziku - algoritem je sestavljen iz instrukcij, ki so predpisane v specifikaciji programskega jezika.
 
 ### Analiza
 
