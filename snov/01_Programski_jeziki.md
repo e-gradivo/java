@@ -72,7 +72,7 @@ Meja med standardno knjižnico in funkcionalnostmi jezika je odvisna od posamezn
 
 Programske jezike kategoriziramo v pet generacij:
 
-1. **Strojni jeziki** _(ang. Machine languages)_: Edina vrsta jezikov, ki jih računalnik lahko obdela neposredno brez predhodne transformacije. Strojna koda _(ang. machine code)_ je tok zaporedja podatkov v dvojiškem (binarnem) številskem sistemu. V pomoč programerju obstajajo gradniki strojnega jezika v desetiški, osmiški ali šesnajstiški obliki, ki jih ta nato sestavi v strojno kodo.
+1. **Strojni jeziki** _(ang. Machine languages)_: Edina vrsta jezikov, ki jih računalnik lahko obdela neposredno brez predhodne transformacije. Strojna koda _(ang. machine code)_ je tok zaporedja podatkov v dvojiškem (binarnem) številskem sistemu. V pomoč programerju obstajajo gradniki strojnega jezika v desetiški, osmiški ali šestnajstiški obliki, ki jih ta nato sestavi v strojno kodo.
 2. **Zbirni jeziki** _(ang. Assembly languages)_: Jeziki, ki zagotavljajo dodaten nivo abstrakcije nad strojno kodo. Človeku poenostavljajo razumevanje logike kode, ki se nato prevede v strojno kodo.
 3. **Visoko-nivojski jeziki** _(ang. High-level languages)_: Programski jeziki, ki težijo k bolj strojno neodvisnemu in programersko bolj prijaznemu jeziku, kot strojni in zbirni jeziki. Primeri: C/C++, Java, Python, Go, JavaScript, ...
 4. **Domenski jeziki** _(ang. Domain-specific languages)_: Jeziki narejeni s specifično aplikacijo v mislih (npr. podatkovne baze, statistična analiza, ...). Primeri: SQL, MATLAB, LabVIEW, ...
@@ -169,7 +169,7 @@ Za potrebe razvoja programov v Javi obstaja poseben paket z vsemi orodji, ki jih
 
 #### Prvi program
 
-Najprej ustvarimo novo datoteko `PozdravljenSvet.java`. Kot razberemo iz mena datoteke, najprej uporabimo poljubno poimenovanje programa, nato pa ime zaključimo s končnico `.java`. Tako vemo, da gre za izvorno kodo v tem programskem jeziku. Datoteko nato odpremo in vanjo zapišemo naslednjo kodo:
+Najprej ustvarimo novo datoteko `PozdravljenSvet.java`. Kot razberemo iz imena datoteke, najprej uporabimo poljubno poimenovanje programa, nato pa ime zaključimo s končnico `.java`. Tako vemo, da gre za izvorno kodo v tem programskem jeziku. Datoteko nato odpremo in vanjo zapišemo naslednjo kodo:
 
 ```java
 class PozdravljenSvet {
@@ -200,3 +200,56 @@ java PozdravljenSvet
 ```
 
 Pri klicu programa navedemo zgolj ime programa, kot smo ga zapisali v izvorni kodi. V tem primeru ne pišemo končnice `.class`, saj JVM zna samostojno najti zahtevano datoteko.
+
+#### Interaktivna jezikovna lupina
+
+Z namestitvijo JDK smo pridobili orodje `jshell`, ki nam omogoča hitro preverjanje pravilnosti programskih ukazov. Gre za program namenjen neskončnemu prebiranju in izvajanju ukazov ter izpisu njihovega rezultata ali vrednosti. Tovrstne programe imenujemo REPL _(ang. read-eval-print loop)_. Pripomorejo nam kadar želimo ukaze izvršiti brez predhodnega pisanja kode v datoteko in izvrševanja nadaljnjega postopka, s katerim lahko program izvedemo (v primeru Jave je ta postopek prevajanje v bajtno kodo in izvajanje le-te s pomočjo navideznega stroja).
+
+Program `jshell` deluje kot ukazna vrstica _(ang. command line)_, v katero vnesemo ukaze ali izraze zapisane v programskem jeziku Java. Ob zagonu programa nas pričaka poziv _(ang. prompt)_, ki zahteva vnos.
+
+```text
+|  Welcome to JShell -- Version 11.0.16
+|  For an introduction type: /help intro
+
+jshell> 
+```
+
+Vanj vnesemo želen ukaz/izraz, ki ga želimo izvesti in nato vnos potrdimo (tipka enter). V našem primeru bomo vnesli izraz za seštevanje števil 2 in 3.
+
+```text
+jshell> 2 + 3
+$1 ==> 5
+```
+
+Po potrditvi se izraz prične izvajati, zatem pa pridobimo rezultat (v kolikor ga ukaz/izraz seveda vrača). Kadar je rezultat neka vrednost, se ta samodejno shrani v spremenljivko imenovano z `$` in zaporedno številko vnosa (v našem primeru `$1`). Nanjo se lahko sklicujemo v naslednjih ukazih/izrazih.
+
+```text
+jshell> $1 + 5
+$2 ==> 10
+```
+
+Dodatna funkcionalnost, ki jo lahko uporabimo v okviru `jshell` je pomoč pri zaključevanju ukazov. V primeru, da se sklicujemo na izbran gradnik kode, zatem pritisnemo tipko tab, ki nam vrne možno nadaljevanje našega ukaza.
+
+```text
+jshell> System.
+Logger                 LoggerFinder           arraycopy(             
+class                  clearProperty(         console()              
+currentTimeMillis()    err                    exit(                  
+gc()                   getLogger(             getProperties()        
+getProperty(           getSecurityManager()   getenv(                
+identityHashCode(      in                     inheritedChannel()     
+lineSeparator()        load(                  loadLibrary(           
+mapLibraryName(        nanoTime()             out                    
+runFinalization()      setErr(                setIn(                 
+setOut(                setProperties(         setProperty(           
+setSecurityManager(
+```
+
+Zatem preprosto dodamo toliko črk, da se nadaljevanje ukaza ne ujema več z nobenim drugim in ponovno pritisnemo tipko tab za samodejno dokončanje ukaza (za primer vzamemo zapis ukaza `System.o`, nato pritisnemo tab, nakar se ukaz samodejno zaključi kot `System.out`).
+
+```text
+jshell> System.out.println("Pozdravljen, svet!")
+Pozdravljen, svet!
+```
+
+Z uporabo programa `jshell` si torej lahko pomagamo kadarkoli želimo preveriti ali je naš zapis ukaza ali izraza pravilen oziroma ali bo izvedba in rezultat le-tega takšen, kot ga zares pričakujemo.
