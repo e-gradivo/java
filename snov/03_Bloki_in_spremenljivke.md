@@ -16,7 +16,7 @@ class PozdravljenSvet {
 
 ... opazimo dva bloka. Prvi je namenjen uokvirjanju kode gradnika programa `PozdravljenSvet`, drugi pa naslednjemu gradniku `main`. V tem primeru je drugi gradnik gnezden v prvem. Na takšen način določimo hierarhijo gradnikov v programu, kar nam pomaga pri sklicevanju na vsakega izmed njih. Zaviti oklepaj predstavlja začetek gradnika, zaklepaj pa njegov zaključek. V primeru bloka `main` smo vanj zapisali tudi ukaz `System.out.println("Pozdravljen, svet!");`, bistveni poudarek pa je tukaj na zadnjemu ločilu, ki ima posebno vlogo. Podpičje `;` namreč zaključuje posamezen stavek ali ukaz v bloku, kar omogoča prevajalniku prepoznavanje naslednjega ukaza.
 
-Omenimo še način uporabe gradnika `System.out.println`. Nanj se sklicujemo s pomočjo navadnih oklepajev `()`, ki pa ne označujejo bloka, temveč so namenjeni izvedbi klica tega gradnika. Pri zapisu `System.out.println("Pozdravljen, svet!");` v oklepaje podamo še parameter, v tem primeru `"Pozdravljen, svet!"`, ki označuje niz z določeno vrednostjo. Po zaključku klica gradnika s podpičjem govorimo o ukazu. Klic gradnika oziroma izvedba ukaza sprožita izvajanje kode, ki je navedena v podanem gradniku. Pri izvajanju programa se ukazi v bloku izvajajo zaporedno, kot so navedeni v kodi. To pomeni, da se pri klicu drugega gradnika najprej izvede njegova koda, šele na to se nadaljuje prvotna.
+Omenimo še način uporabe gradnika `System.out.println`. Nanj se sklicujemo s pomočjo navadnih oklepajev `()`, ki pa ne označujejo bloka, temveč so namenjeni izvedbi klica tega gradnika. Pri zapisu `System.out.println("Pozdravljen, svet!");` v oklepaje podamo še parameter, v tem primeru `"Pozdravljen, svet!"`, ki označuje niz z določeno vrednostjo. Po zaključku klica gradnika s podpičjem govorimo o ukazu. Klic gradnika oziroma izvedba ukaza sprožita izvajanje kode, ki je navedena v podanem gradniku. Pri izvajanju programa se ukazi v bloku izvajajo zaporedno, kot so navedeni v kodi. To pomeni, da se pri klicu drugega gradnika najprej izvede njegova koda, šele nato se nadaljuje prvotna.
 
 ```java
 class PozdravljenSvet {
@@ -53,7 +53,7 @@ Pri poimenovanju spremenljivk moramo začeti s črkami, pri čemer je končno za
 - znak `'_'` in `'$'`
 - katerikoli Unicode znak, ki je določen kot črka abecede izbranega jezika
 
-Glede na omenjeno smejo imena spremenljivk vsebovati tudi šumnike, vendar tako iz zgodovinskih, kot tudi pogostosti pojavitve v kodi, njihovo uporabo odsvetujemo. Izpostaviti je potrebno še, da so imena občutljiva na velikost črk, kar pomeni, da sta spremenljivki ...
+Glede na omenjeno smejo imena spremenljivk vsebovati tudi šumnike, vendar tako iz zgodovinskih razlogov, kot tudi pogostosti pojavitve v kodi, njihovo uporabo odsvetujemo. Izpostaviti je potrebno še, da so imena občutljiva na velikost črk, kar pomeni, da sta spremenljivki ...
 
 ```java
 int steviloOseb;
@@ -62,7 +62,7 @@ int stevilooseb;
 
 ... različni in gre v tem primeru dejansko za deklaracijo dveh spremenljivk. V kolikor želimo novi spremenljivki določiti ime že obstoječe, nas bo prevajalnik opozoril, da je bila spremenljivka s takšnim imenom že predhodno deklarirana in preprečil nadaljnje prevajanje. Poimenovanjem spremenljivk, ki imajo samo drugačno velikost črke, se naj skušamo pri lastnih programih izogniti, saj lahko hitro pride do napačne uporabe in v drugem kontekstu, kot je bilo prvotno predvideno.
 
-Pri poimenovanju je potrebno upoštevati še, da uporaba znaka `'$'` v naši kodi ni priporočena, saj je ta namenjen zgolj imenom  ustvarjenih s strani prevajalnika in ostalih orodij, ki so del JDK.
+Pri poimenovanju je potrebno upoštevati še, da uporaba znaka `'$'` v naši kodi ni priporočena, saj je ta namenjen zgolj imenom  ustvarjenim s strani prevajalnika in ostalih orodij, ki so del JDK.
 
 ### Inicializacija
 
@@ -101,7 +101,7 @@ int steviloOseb = 5;
 
 S tem prihranimo vrstico kode, vendar takšen način zapisa ni vedno mogoč. Kadar v času deklaracije ne poznamo vrednosti spremenljivke, moramo še vedno uporabljati ločen zapis za deklaracijo in inicializacijo.
 
-Omenimo še, da specifikacija programskega jezika Java ne navaja definicije, kot strokovni izraz, ki ga uporabljamo pri poimenovanju tovrstnih operacij v kodi. Termin definicije je tako pogost zaradi ostalih programskih jezikov, kjer se uporablja, da ga kljub temu omenjamo tukaj v takšni obliki.
+Omenimo še, da specifikacija programskega jezika Java ne navaja definicije kot strokovni izraz, ki ga uporabljamo pri poimenovanju tovrstnih operacij v kodi. Termin definicije je tako pogost zaradi ostalih programskih jezikov, kjer se uporablja, da ga kljub temu omenjamo tukaj v takšni obliki.
 
 ## Konstante
 
@@ -137,7 +137,7 @@ Spremenljivke se po dogovoru pišejo z malimi črkami ter veliko začetnico vseh
 - rezultatIzracuna
 - steviloSprememb
 
-Konstante se po dogovoru pišejo z velikimi črkami, besede pa ločimo s podčrtajem. Takšen zapis imenujemo snake_case. Nekaj primerov:
+Konstante se po dogovoru pišejo z velikimi črkami, besede pa ločimo s podčrtajem. Takšen zapis imenujemo SCREAMING_SNAKE_CASE. Nekaj primerov:
 
 - STEVILO_PI
 - PRIVZETA_VREDNOST
@@ -151,7 +151,7 @@ Cilj izvajanja operacij je sestavljanje vrednosti iz vhodnih podatkov. V nadalje
 
 ### Aritmetične
 
-Operacije, ki jih lahko izvajamo nad podatki številskega tipa zajemajo vse običajne matematične operacije - seštevanje, odštevanje, množenje in deljenje, poleg tega pa še operacijo modulo, ki vrste ostanek po deljenju števila. Vrstni red upoštevanja operatorjev je enak kot v matematiki, če to želimo spremeniti pa ustrezno uporabimo oklepaje. Operator modulo je enakovreden množenju in deljenju.
+Operacije, ki jih lahko izvajamo nad podatki številskega tipa zajemajo vse običajne matematične operacije - seštevanje, odštevanje, množenje in deljenje, poleg tega pa še operacijo modulo, ki vrne ostanek po deljenju števila. Vrstni red upoštevanja operatorjev je enak kot v matematiki, če to želimo spremeniti pa ustrezno uporabimo oklepaje. Operator modulo je enakovreden množenju in deljenju.
 
 | Operacija  | Izraz | Primer    |
 | ---------- | ----- | --------- |
@@ -161,7 +161,7 @@ Operacije, ki jih lahko izvajamo nad podatki številskega tipa zajemajo vse obi�
 | Deljenje   | a / b | 4 / 2 = 2 |
 | Modulo     | a % b | 8 % 3 = 2 |
 
-Deljenje celih števil z 0 povzroči napako v programu, ista operacija pri delu z decimalnimi števili pa vrne vrednost neskončnosti oziroma NaN. Tip končnega rezultata po izvedbi operacije je odvisen od tipa vhodnih podatkov. Vedno zavzame bolj natančno izmed vhodnih, torej če je eden decimalno število, bo izhod tudi decimalno število.
+Deljenje celih števil z 0 povzroči napako v programu, ista operacija pri delu z decimalnimi števili pa vrne vrednost neskončnosti oziroma NaN. Tip končnega rezultata po izvedbi operacije je odvisen od tipa vhodnih podatkov. Vedno zavzame bolj natančno izmed vhodnih, torej če je eno decimalno število, bo izhod tudi decimalno število.
 
 ```java
 int a = 7;
@@ -252,7 +252,7 @@ int e = a ^ b; // e = 4 (0b0100)
 
 ## Komentarji
 
-V času programiranja pogosto implementiramo programsko logiko, ki je običajno s prvim pregledom ne razumemo v celoti ali pa se izvaja na zelo specifičen način. Pri tem lahko v namen lažjega razumevanja ob posamezne dele kode zapišemo komentarje, ki obrazložijo način njenega delovanja. S tem pomagamo drugim razvijalcem, ki prebirajo našo kodo ali v primeru, da dlje časa ne nadgrajujemo oziroma vzdržujemo programa, tudi sebi ob ponovnem pregledu prihranimo čas.
+V času programiranja pogosto implementiramo programsko logiko, ki je običajno s prvim pregledom ne razumemo v celoti ali pa se izvaja na zelo specifičen način. Pri tem lahko v namen lažjega razumevanja ob posamezne dele kode zapišemo komentarje, ki obrazložijo način njenega delovanja. S tem pomagamo drugim razvijalcem, ki prebirajo našo kodo ali v primeru, da dlje časa ne nadgrajujemo oziroma vzdržujemo programa, tudi sebi ob ponovnem pregledu prihranimo čas. Komentarji so v času prevajanja prezrti in ne vplivajo na preostalo kodo in način izvajanja programa.
 
 Java podpira tri načine označevanja komentarjev:
 
@@ -276,7 +276,7 @@ Java podpira tri načine označevanja komentarjev:
 3. Dokumentacija `/** */` - pri dokumentiranju gradnikov programa uporabimo komentar podoben poševnici in zvezdici, vendar ima ta pri začetnem zapisu dve zvezdici. V času generiranja dokumentacije se upoštevajo le tovrstni komentarji, ki morajo biti umeščeni pred ustrezne gradnike kode.
 
     ```java
-    /***
+    /**
     * Program za izpis pozdrava svetu.
     * @version 1.0 2022-09-01
     * @author E-gradivo
@@ -389,7 +389,6 @@ Pri branju s pomočjo gradnika `Scanner` lahko pridobimo podatke tudi v drugih p
 | float          | in.nextFloat()   | /                                                   |
 | double         | in.nextDouble()  | /                                                   |
 | boolean        | in.nextBoolean() | /                                                   |
-| char           | in.nextChar()    | /                                                   |
 | String         | in.next()        | vrne zaporedje znakov (niz) vse do prvega presledka |
 | String         | in.nextLine()    | vrne niz celotne vrstice do potrditve               |
 
