@@ -74,7 +74,7 @@ for (int stevec = 0; stevec < 10; stevec++) {
 }
 ```
 
-Potek delovanja zanke `for` najprej izvede inicializacijski del, kjer običajmo nastavimo začetno stanje spremenljivke na katero se opiramo v pogoju. Zatem se izvede blok zanke, kar je podobno zanki `do-while`. Po njegovem zaključku sledi pogojni del, kjer se tako kot v pogojnem stavku preveri njegova veljavnost. V primeru, da je rezultat pogoja pritrdilen zanka nadaljuje na izvrševalni del, kjer se izvede stavek, ki vpliva na stanje zanke oziroma njene spremenljivke, ki določa stanje.
+Potek delovanja zanke `for` najprej izvede inicializacijski del, kjer običajmo nastavimo začetno stanje spremenljivke na katero se opiramo v pogoju. Zatem se izvede pogojni del, ki preveri ustreznost nadaljnjega izvajanja zanke. V kolikor je predpostavka pogoja pravilna, se prične izvajati blok zanke, sicer pa se njeno izvajanje zaključi. V primeru izvedbe bloka, se po zadnjem ukazu v bloku izvede še izvrševalni del, ki običajno zgolj spremeni stanje spremenljivke, ki jo preverjamo v pogoju. Celoten postopek od že opisanega izvajanja pogojnega dela naprej se ponavlja toliko časa, dokler predpostavka pogoja ni več veljavna. Zatem se izvajanje zanke `for` zaključi in program nadaljuje z izvajanjem naslednjih ukazov.
 
 V zgornjem primeru smo na začetku zanke navedli spremenljivko `stevec`, ki določa stanje zanke. Njeno vrednost smo postavili na `0`. Sledi pogojni del, kjer smo zapisali, da želimo števec manjši od `10`. Izvrševalni del po vsakem izvajanju bloka zanke poveča `stevec` za 1. Napisanemu lahko okrajšamo pomen v to, da smo ustvarili zanko, ki blok izvede desetkrat. Tako po zaključku izvajanja programa dobimo naslednji rezultat:
 
