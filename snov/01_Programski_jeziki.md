@@ -34,7 +34,7 @@ Programski jezik določa način opredeljevanja vrednosti in izrazov s pomočjo t
 
 #### Tipizirani in netipizirani jeziki
 
-Jezik je tipiziran, če specifikacija operacije definira tip podatkov, nad katerim jo lahko izvedemo. V matematiki lahko seštevanje izvedemo nad dvemi števili, ne moremo pa te iste operacije ponoviti nad dvema črkama (operacija za to vrsto podatkov ni definirana). To velja tudi za tipizirane programske jezike, ki preverjajo ustreznost vrednosti podatkov, ki jih navedemo za uporabo v operaciji. Vsaki operaciji zato predhodno določimo tipe podatkov, s katerimi lahko operira.
+Jezik je tipiziran, če specifikacija operacije definira tip podatkov, nad katerim jo lahko izvedemo. V matematiki lahko seštevanje izvedemo med dvema številoma, ne moremo pa te iste operacije ponoviti med dvema črkama (operacija za to vrsto podatkov ni definirana). To velja tudi za tipizirane programske jezike, ki preverjajo ustreznost vrednosti podatkov, ki jih navedemo za uporabo v operaciji. Vsaki operaciji zato predhodno določimo tipe podatkov, s katerimi lahko operira.
 
 V nasprotju s tipiziranimi jeziki, obstajajo tudi netipizirani, ki za razliko dovoljujejo izvajanje katerekoli operacije nad podatki kateregakoli tipa. Večina zbirnih jezikov je netipiziranih, podatke pa obravnavajo kot zaporedja bitov različne dolžine, zato tudi rezultat vsake operacije ostane v takšni obliki.
 
